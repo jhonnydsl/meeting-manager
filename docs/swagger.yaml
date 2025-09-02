@@ -1,0 +1,540 @@
+basePath: /
+definitions:
+  dtos.InvitationInput:
+    properties:
+      receiver_id:
+        type: integer
+      reuniao_id:
+        type: integer
+    required:
+    - receiver_id
+    - reuniao_id
+    type: object
+  dtos.InvitationOutput:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      receiver_id:
+        type: integer
+      reuniao_id:
+        type: integer
+      sender_id:
+        type: integer
+      status:
+        type: string
+    type: object
+  dtos.MeetingInput:
+    properties:
+      description:
+        type: string
+      end_time:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+    required:
+    - end_time
+    - start_time
+    - title
+    type: object
+  dtos.MeetingOutput:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: integer
+      owner_id:
+        type: integer
+      start_time:
+        type: string
+      title:
+        type: string
+    type: object
+  dtos.UpdateMeeting:
+    properties:
+      description:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: integer
+      startTime:
+        type: string
+      title:
+        type: string
+    type: object
+  dtos.UserInput:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dtos.UserLoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dtos.UserOutput:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API para gerenciar usuários, reuniões e convites
+  title: Gerenciamento de Reuniões API
+  version: "1.0"
+paths:
+  /invitations:
+    post:
+      consumes:
+      - application/json
+      description: Cria um convite para outro usuário participar de uma reunião
+      parameters:
+      - description: Dados do convite
+        in: body
+        name: invitation
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.InvitationInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.InvitationOutput'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cria um novo convite
+      tags:
+      - invitations
+  /invitations/{id}:
+    delete:
+      description: Permite que apenas o dono da reunião exclua um convite
+      parameters:
+      - description: ID do convite
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: convite deletado com sucesso
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: erro ao excluir convite
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: usuário não autenticado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Excluir convite
+      tags:
+      - invitations
+  /invitations/received:
+    get:
+      description: Retorna uma lista de convites em que o usuário autenticado recebeu
+        (receiver).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.InvitationOutput'
+            type: array
+        "400":
+          description: id do usuário inválido ou erro de query
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: usuário não autenticado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista todos os convites recebidos pelo usuário logado
+      tags:
+      - invitations
+  /invitations/sent:
+    get:
+      description: Retorna uma lista de convites em que o usuário autenticado é o
+        remetente (sender).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.InvitationOutput'
+            type: array
+        "400":
+          description: id do usuário inválido ou erro de query
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: usuário não autenticado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista todos os convites enviados pelo usuário logado
+      tags:
+      - invitations
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Faz login com email e senha e retorna um token JWT
+      parameters:
+      - description: Dados para login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserLoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token JWT
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Autentica um usuário
+      tags:
+      - users
+  /meetings:
+    get:
+      consumes:
+      - application/json
+      description: Retorna apenas as reuniões criadas pelo usuário logado
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MeetingOutput'
+            type: array
+        "400":
+          description: usuário não autenticado ou id inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: erro ao buscar reuniões
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista todas as reuniões do usuário autenticado
+      tags:
+      - meetings
+    post:
+      consumes:
+      - application/json
+      description: Cria uma reunião com título, descrição, horário de início e fim.
+        O usuário logado será o proprietário (owner).
+      parameters:
+      - description: Dados da reunião
+        in: body
+        name: meeting
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MeetingInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.MeetingOutput'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cria uma nova reunião
+      tags:
+      - meetings
+  /meetings/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove uma reunião existente
+      parameters:
+      - description: ID da reunião
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: reunião excluída com sucesso
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: id inválido ou erro na exclusão
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: usuário não autenticado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: reunião não encontrada
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Deletar reunião
+      tags:
+      - meetings
+  /meetings/update:
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de uma reunião (título, descrição, horários).
+        O usuário logado deve ser o dono da reunião.
+      parameters:
+      - description: Dados da reunião com ID
+        in: body
+        name: meeting
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateMeeting'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.MeetingOutput'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Atualiza uma reunião
+      tags:
+      - meetings
+  /users:
+    delete:
+      description: Deleta o usuário logado a partir do token JWT
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mensagem de sucesso
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Erro ao deletar usuário
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Usuário não autenticado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Deleta o usuário autenticado
+      tags:
+      - users
+    get:
+      description: Retorna todos os usuários cadastrados
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.UserOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista todos os usuários
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Cria um usuário com nome, email e senha
+      parameters:
+      - description: Dados do usuário
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.UserOutput'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Cria um novo usuário
+      tags:
+      - users
+  /users/profile:
+    get:
+      description: Obtém os dados do usuário logado a partir do token JWT
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserOutput'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Retorna o perfil do usuário autenticado
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,169 @@
+package controllers
+
+import (
+	"fmt"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/services"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
+)
+
+type InvitationController struct {
+	Service *services.InvitationService
+}
+
+// CreateInvitation godoc
+// @Summary Cria um novo convite
+// @Description Cria um convite para outro usuário participar de uma reunião
+// @Tags invitations
+// @Accept json
+// @Produce json
+// @Param invitation body dtos.InvitationInput true "Dados do convite"
+// @Success 201 {object} dtos.InvitationOutput
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Router /invitations [post]
+// @Security BearerAuth
+func (controller *InvitationController) CreateInvitation(c *gin.Context) {
+	var invitationInput dtos.InvitationInput
+
+	err := c.ShouldBindJSON(&invitationInput)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(401, gin.H{"error": "usuário não autenticado"})
+		return
+	}
+
+	senderID := userID.(int)
+	
+	createdInvitation, err := controller.Service.CreateInvitation(invitationInput, senderID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "erro ao criar convite"})
+		return
+	}
+
+	receiverEmail, err := controller.Service.ReturnUserByEmail(createdInvitation.ReceiverID)
+	if err != nil {
+		fmt.Println("Erro ao pegar email:", err)
+	} else {
+		go func() {
+			if err := utils.SendInvitationEmail(receiverEmail, createdInvitation); err == nil {
+				controller.Service.UpdateInvitationStatus(createdInvitation.ID, "sent")
+			} else {
+				fmt.Println("Erro ao enviar email:", err)
+			}
+		}()
+	}
+
+	c.JSON(201, createdInvitation)
+}
+
+// GetAllInvitations godoc
+// @Summary Lista todos os convites enviados pelo usuário logado
+// @Description Retorna uma lista de convites em que o usuário autenticado é o remetente (sender).
+// @Tags invitations
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} dtos.InvitationOutput
+// @Failure 400 {object} map[string]string "id do usuário inválido ou erro de query"
+// @Failure 401 {object} map[string]string "usuário não autenticado"
+// @Router /invitations/sent [get]
+func (controller *InvitationController) GetAllInvitations(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(401, gin.H{"error": "usuário não autenticado"})
+		return
+	}
+
+	senderID, ok := userID.(int)
+	if !ok {
+		c.JSON(400, gin.H{"error": "id do usuário invalido"})
+		return
+	}
+
+	invitations, err := controller.Service.GetAllInvitations(senderID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, invitations)
+}
+
+// GetAllInvitations godoc
+// @Summary Lista todos os convites recebidos pelo usuário logado
+// @Description Retorna uma lista de convites em que o usuário autenticado recebeu (receiver).
+// @Tags invitations
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} dtos.InvitationOutput
+// @Failure 400 {object} map[string]string "id do usuário inválido ou erro de query"
+// @Failure 401 {object} map[string]string "usuário não autenticado"
+// @Router /invitations/received [get]
+func (controller *InvitationController) GetReceiver(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(401, gin.H{"error": "usuário não autenticado"})
+		return
+	}
+
+	receiverID, ok := userID.(int)
+	if !ok {
+		c.JSON(400, gin.H{"error": "id do usuário invalido"})
+		return
+	}
+
+	invitations, err := controller.Service.GetReceiver(receiverID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, invitations)
+}
+
+// DeleteInvitation godoc
+// @Summary Excluir convite
+// @Description Permite que apenas o dono da reunião exclua um convite
+// @Tags invitations
+// @Param id path int true "ID do convite"
+// @Success 200 {object} map[string]string "convite deletado com sucesso"
+// @Failure 400 {object} map[string]string "erro ao excluir convite"
+// @Failure 401 {object} map[string]string "usuário não autenticado"
+// @Security BearerAuth
+// @Router /invitations/{id} [delete]
+func (controller *InvitationController) DeleteInvitation(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(401, gin.H{"error": "usuário não autenticado"})
+		return
+	}
+
+	ownerID, ok := userID.(int)
+	if !ok {
+		c.JSON(400, gin.H{"error": "id do usuário invalido"})
+		return
+	}
+
+	err = controller.Service.DeleteInvitation(id, ownerID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "convite deletado com sucesso"})
+}
