@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"unicode/utf8"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
@@ -19,6 +20,10 @@ type UserService struct {
 func (service *UserService) CreateUser(user dtos.UserInput) (dtos.UserOutput, error) {
 	if user.Email == "" || user.Name == "" {
 		return dtos.UserOutput{}, errors.New("nome e email não podem estar vazios")
+	}
+
+	if utf8.RuneCountInString(user.Password) < 6 {
+		return dtos.UserOutput{}, errors.New("senha deve conter no minimo 6 caracteres")
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
