@@ -36,9 +36,12 @@ func AuthMiddleware() gin.HandlerFunc {
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			if userID, ok := claims["user_id"].(float64); ok {
 				c.Set("userID", int(userID))
+				c.Next()
+				return 
 			}
 		}
 
-		c.Next()
+		c.JSON(401, gin.H{"error": "userID invalido"})
+		c.Abort()
 	}
 }

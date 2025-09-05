@@ -49,12 +49,7 @@ func (controller *MeetingController) CreateMeeting(c *gin.Context) {
 		return
 	}
 
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-	ownerID := userID.(int)
+	ownerID := c.GetInt("userID")
 
 	meeting := dtos.Meeting{
 		Title: meetingInput.Title,
@@ -90,17 +85,7 @@ func (controller *MeetingController) CreateMeeting(c *gin.Context) {
 // @Failure 500 {object} map[string]string "erro ao buscar reuniões"
 // @Router /meetings [get]
 func (controller *MeetingController) GetAllMeetings(c *gin.Context) {
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	ownerID, ok := userID.(int)
-	if !ok {
-		c.JSON(400, gin.H{"error": "id do usuário inválido"})
-		return
-	}
+	ownerID := c.GetInt("userID")
 
 	meetings, err := controller.Service.GetAllMeetings(ownerID)
 	if err != nil {
@@ -147,17 +132,7 @@ func (controller *MeetingController) UpdateController(c *gin.Context) {
 		return
 	}
 
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	ownerID, ok := userID.(int)
-	if !ok {
-		c.JSON(400, gin.H{"error": "id do usuário inválido"})
-		return
-	}
+	ownerID := c.GetInt("userID")
 
 	meeting := dtos.MeetingOutput{
 		ID: meetingInput.ID,
@@ -202,17 +177,7 @@ func (controller *MeetingController) DeleteMeeting(c *gin.Context) {
 		return
 	}
 
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	ownerID, ok := userID.(int)
-	if !ok {
-		c.JSON(400, gin.H{"error": "id do usuário invalido"})
-		return
-	}
+	ownerID := c.GetInt("userID")
 
 	err = controller.Service.DeleteMeeting(id, ownerID)
 	if err != nil {

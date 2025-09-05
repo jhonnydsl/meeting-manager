@@ -35,13 +35,7 @@ func (controller *InvitationController) CreateInvitation(c *gin.Context) {
 		return
 	}
 
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	senderID := userID.(int)
+	senderID := c.GetInt("userID")
 	
 	createdInvitation, err := controller.Service.CreateInvitation(invitationInput, senderID)
 	if err != nil {
@@ -76,17 +70,7 @@ func (controller *InvitationController) CreateInvitation(c *gin.Context) {
 // @Failure 401 {object} map[string]string "usuário não autenticado"
 // @Router /invitations/sent [get]
 func (controller *InvitationController) GetAllInvitations(c *gin.Context) {
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	senderID, ok := userID.(int)
-	if !ok {
-		c.JSON(400, gin.H{"error": "id do usuário invalido"})
-		return
-	}
+	senderID := c.GetInt("userID")
 
 	invitations, err := controller.Service.GetAllInvitations(senderID)
 	if err != nil {
@@ -108,17 +92,7 @@ func (controller *InvitationController) GetAllInvitations(c *gin.Context) {
 // @Failure 401 {object} map[string]string "usuário não autenticado"
 // @Router /invitations/received [get]
 func (controller *InvitationController) GetReceiver(c *gin.Context) {
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	receiverID, ok := userID.(int)
-	if !ok {
-		c.JSON(400, gin.H{"error": "id do usuário invalido"})
-		return
-	}
+	receiverID := c.GetInt("userID")
 
 	invitations, err := controller.Service.GetReceiver(receiverID)
 	if err != nil {
@@ -147,17 +121,7 @@ func (controller *InvitationController) DeleteInvitation(c *gin.Context) {
 		return
 	}
 
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	ownerID, ok := userID.(int)
-	if !ok {
-		c.JSON(400, gin.H{"error": "id do usuário invalido"})
-		return
-	}
+	ownerID := c.GetInt("userID")
 
 	err = controller.Service.DeleteInvitation(id, ownerID)
 	if err != nil {

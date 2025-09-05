@@ -96,14 +96,9 @@ func (controller *UserController) LoginUser(c *gin.Context) {
 // @Router /users/profile [get]
 // @Security BearerAuth
 func (controller *UserController) GetProfile(c *gin.Context) {
-	userID, exists := c.Get("userID")
+	userID := c.GetInt("userID")
 
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
-
-	user, err := controller.Service.GetUserByID(userID.(int))
+	user, err := controller.Service.GetUserByID(userID)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "usuário não encontrado"})
 		return
@@ -123,13 +118,9 @@ func (controller *UserController) GetProfile(c *gin.Context) {
 // @Router /users [delete]
 // @Security BearerAuth
 func (controller *UserController) DeleteUser(c *gin.Context) {
-	userID, exists := c.Get("userID")
-	if !exists {
-		c.JSON(401, gin.H{"error": "usuário não autenticado"})
-		return
-	}
+	userID := c.GetInt("userID")
 
-	if err := controller.Service.DeleteUser(userID.(int)); err != nil {
+	if err := controller.Service.DeleteUser(userID); err != nil {
 		c.JSON(400, gin.H{"error": "erro ao deletar usuario"})
 		return
 	}
