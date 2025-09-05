@@ -47,16 +47,19 @@ func (controller *InvitationController) CreateInvitation(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Erro ao pegar email:", err)
 	} else {
-		go func() {
-			if err := utils.SendInvitationEmail(receiverEmail, createdInvitation); err == nil {
-				controller.Service.UpdateInvitationStatus(createdInvitation.ID, "sent")
-			} else {
-				fmt.Println("Erro ao enviar email:", err)
+		go func(invID int, email string) {
+			if err := utils.SendInvitationEmail(email, createdInvitation); err != nil {
+				fmt.Println("erro ao enviar email:", err)
+				return
+			} 
+			
+			if err := controller.Service.UpdateInvitationStatus(invID, "sent"); err != nil {
+				fmt.Println("erro ao atualizar status", err)
 			}
-		}()
+		}(createdInvitation.ID, receiverEmail)
 	}
 
-	c.JSON(201, createdInvitation)
+	c.JSON(201, gin.H{"message": "convite enviado com sucesso"})
 }
 
 // GetAllInvitations godoc
