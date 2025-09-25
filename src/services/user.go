@@ -1,15 +1,14 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"time"
-	"unicode/utf8"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,22 +18,15 @@ type UserService struct {
 
 // CreateUser handles user creation with basic validation and password hashing.
 func (service *UserService) CreateUser(user dtos.UserInput) (dtos.UserOutput, error) {
-	// Basic validation: email and name cannot be empty.
-	if user.Email == "" || user.Name == "" {
-		return dtos.UserOutput{}, errors.New("nome e email não podem estar vazios")
-	}
-
-	// Check minimum password length (at least 6 characters).
-	if utf8.RuneCountInString(user.Password) < 6 {
-		return dtos.UserOutput{}, errors.New("senha deve conter no minimo 6 caracteres")
+	if err := utils.ValidateUserInput(user); err != nil {
+		return dtos.UserOutput{}, err
 	}
 
 	// Hash the password using bcrypt
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return dtos.UserOutput{}, err
 	}
-	hashedPassword := string(hash)
 	user.Password = hashedPassword
 
 	// Save the user into the repository.
