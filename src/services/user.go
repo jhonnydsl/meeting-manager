@@ -1,15 +1,12 @@
 package services
 
 import (
+	"errors"
 	"fmt"
-	"os"
-	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
@@ -37,25 +34,16 @@ func (service *UserService) GetAllUsers() ([]dtos.UserOutput, error) {
 func (service *UserService) LoginUser(login dtos.UserLoginInput) (string, error) {
 	userLogin, err := service.UserRepo.GetUserByEmail(login.Email)
 	if err != nil {
-		return "", fmt.Errorf("email ou senha invalidos")
+		return "", fmt.Errorf("invalid email or password")
 	}
 	
-	err = bcrypt.CompareHashAndPassword([]byte(userLogin.Password), []byte(login.Password))
-	if err != nil {
-		return "", fmt.Errorf("email ou senha invalidos")
+	if err := utils.CheckPassword(userLogin.Password, login.Password); err != nil {
+		return "", errors.New("invalid email or password")
 	}
 
-	claims := jwt.MapClaims{
-		"user_id": userLogin.ID,
-		"email": userLogin.Email,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
-	}
-
-	// Create and sign a new JWT token using secret key.
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenStr, err := utils.GenerateJWT(userLogin.ID, userLogin.Email)
 	if err != nil {
-		return "", fmt.Errorf("erro ao gerar token: %w", err)
+		return "", fmt.Errorf("failed to generate token: %w", err)
 	}
 
 	return tokenStr, nil
