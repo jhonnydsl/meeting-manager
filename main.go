@@ -24,15 +24,15 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("erro ao carregar variaveis de ambiente")
+		log.Println("error loading environment variables")
 		return
 	}
 	
 	err = repository.Connect()
 	if err != nil {
-		log.Fatalf("erro ao conectar ao banco de dados: %v", err)
+		log.Fatalf("error connecting to the database: %v", err)
 	} else {
-		log.Println("Conexão estabelecida.")
+		log.Println("connection established")
 	}
 	defer repository.DB.Close()
 		
@@ -40,17 +40,17 @@ func main() {
 		
 	err = repo.CreateTableUsers()
 	if err != nil {
-		log.Fatalf("erro ao criar tabela users: %v", err)
+		log.Fatalf("error creating users table: %v", err)
 	}
 		
 	err = repo.CreateTableReunioes()
 	if err != nil {
-		log.Fatalf("erro ao criar tabela reunioes: %v", err)
+		log.Fatalf("error creating reunioes table: %v", err)
 	}
 		
 	err = repo.CreateTableConvites()
 	if err != nil {
-		log.Fatalf("erro ao criar tabela convites: %v", err)
+		log.Fatalf("error creating convites table: %v", err)
 	}
 		
 	app := gin.Default()

@@ -13,11 +13,11 @@ type MeetingService struct {
 
 func (service *MeetingService) CreateMeeting(meeting dtos.Meeting, ownerID int) (dtos.MeetingOutput, error) {
 	if meeting.Title == "" || meeting.StartTime.IsZero() || meeting.EndTime.IsZero() {
-		return dtos.MeetingOutput{}, errors.New("erro ao criar reunião, favor preencher campos obrigatorios")
+		return dtos.MeetingOutput{}, errors.New("error creating meeting, please fill in the required fields")
 	}
 
 	if meeting.StartTime.After(meeting.EndTime) {
-		return dtos.MeetingOutput{}, errors.New("start_time não pode ser depois do end_time")
+		return dtos.MeetingOutput{}, errors.New("start_time cannot be after end_time")
 	}
 
 	hasConflict, err := service.MeetingRepo.HasConflict(ownerID, meeting.StartTime, meeting.EndTime)
@@ -26,7 +26,7 @@ func (service *MeetingService) CreateMeeting(meeting dtos.Meeting, ownerID int) 
 	}
 
 	if hasConflict {
-		return dtos.MeetingOutput{}, errors.New("conflito de horario: já existe uma reunião nesse intervalo")
+		return dtos.MeetingOutput{}, errors.New("schedule conflict: there is already a meeting in this time slot")
 	}
 
 	return service.MeetingRepo.CreateMeeting(meeting, ownerID)
@@ -38,11 +38,11 @@ func (service *MeetingService) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput
 
 func (service *MeetingService) UpdateMeeting(meeting dtos.MeetingOutput, ownerID int) (dtos.MeetingOutput, error) {
 	if meeting.Title == "" || meeting.StartTime.IsZero() || meeting.EndTime.IsZero() {
-		return dtos.MeetingOutput{}, errors.New("erro ao atualizar reunião, favor preencher campos obrigatorios")
+		return dtos.MeetingOutput{}, errors.New("error updating meeting, please fill in the required fields")
 	}
 
 	if meeting.StartTime.After(meeting.EndTime) {
-		return dtos.MeetingOutput{}, errors.New("start_time não pode ser depois do end_time")
+		return dtos.MeetingOutput{}, errors.New("start_time cannot be after end_time")
 	}
 
 	hasConflict, err := service.MeetingRepo.HasConflict(ownerID, meeting.StartTime, meeting.EndTime, meeting.ID)
@@ -51,7 +51,7 @@ func (service *MeetingService) UpdateMeeting(meeting dtos.MeetingOutput, ownerID
 	}
 
 	if hasConflict {
-		return dtos.MeetingOutput{}, errors.New("conflito de horario: já existe uma reunião nesse intervalo")
+		return dtos.MeetingOutput{}, errors.New("schedule conflict: there is already a meeting during this time range")
 	}
 
 	return service.MeetingRepo.UpdateMeeting(meeting, ownerID)

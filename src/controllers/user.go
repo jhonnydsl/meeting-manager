@@ -100,7 +100,7 @@ func (controller *UserController) GetProfile(c *gin.Context) {
 
 	user, err := controller.Service.GetUserByID(userID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "usuário não encontrado"})
+		c.JSON(400, gin.H{"error": "user not found"})
 		return
 	}
 
@@ -121,9 +121,9 @@ func (controller *UserController) DeleteUser(c *gin.Context) {
 	userID := c.GetInt("userID")
 
 	if err := controller.Service.DeleteUser(userID); err != nil {
-		c.JSON(400, gin.H{"error": "erro ao deletar usuario"})
+		c.JSON(400, gin.H{"error": "error deleting user"})
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "usuario deletado com sucesso"})
+	c.JSON(200, gin.H{"message": "user deteted successfully"})
 }

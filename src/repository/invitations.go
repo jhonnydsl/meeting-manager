@@ -101,7 +101,7 @@ func (r *InvitationRepository) DeleteInvitation(invitationID int, ownerID int ) 
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("nenhum convite deletado: ou não existe ou você não é o dono da reunião")
+		return errors.New("no invitation deleted: either it doesn't exist or you are not the meeting owner")
 	}
 
 	return nil
@@ -120,7 +120,7 @@ func (r *InvitationRepository) ReturnUserByEmail(userID int) (string, error) {
 
 	err := DB.QueryRow(query, userID).Scan(&email)
 	if err != nil {
-		return "", errors.New("usuário não encontrado")
+		return "", errors.New("user not found")
 	}
 
 	return email, nil

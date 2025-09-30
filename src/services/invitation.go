@@ -13,7 +13,7 @@ type InvitationService struct {
 
 func (service *InvitationService) CreateInvitation(invitation dtos.InvitationInput, senderID int) (dtos.InvitationOutput, error) {
 	if invitation.ReuniaoID <= 0 || invitation.ReceiverID <= 0 {
-		return dtos.InvitationOutput{}, errors.New("reuniaoID e receiverID devem ser maiores que zero")
+		return dtos.InvitationOutput{}, errors.New("reuniaoID e receiverID must be greater than zero")
 	}
 
 	ownerID, err := service.InvitRepo.GetOwnerID(invitation.ReuniaoID)
@@ -22,7 +22,7 @@ func (service *InvitationService) CreateInvitation(invitation dtos.InvitationInp
 	}
 
 	if ownerID != senderID {
-		return dtos.InvitationOutput{}, errors.New("somente o dono da reunião pode enviar convites")
+		return dtos.InvitationOutput{}, errors.New("only the meeting owner can send invitations")
 	}
 
 	return service.InvitRepo.CreateInvitation(invitation, senderID)

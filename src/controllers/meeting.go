@@ -61,7 +61,7 @@ func (controller *MeetingController) CreateMeeting(c *gin.Context) {
 
 	createdMeeting, err := controller.Service.CreateMeeting(meeting, ownerID)
 	if err != nil {
-		if strings.Contains(err.Error(), "conflito de horario") {
+		if strings.Contains(err.Error(), "schedule conflict") {
 			c.JSON(409, gin.H{"error": err.Error()})
 			return
 		}
@@ -89,7 +89,7 @@ func (controller *MeetingController) GetAllMeetings(c *gin.Context) {
 
 	meetings, err := controller.Service.GetAllMeetings(ownerID)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "erro ao buscar reuniões"})
+		c.JSON(500, gin.H{"error": "error fetching meetings"})
 		return
 	}
 
@@ -122,13 +122,13 @@ func (controller *MeetingController) UpdateController(c *gin.Context) {
 
 	startTime, err := time.Parse(layoutBR, meetingInput.StartTime)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "start_time inválido"})
+		c.JSON(400, gin.H{"error": "invalid start_time"})
 		return
 	}
 
 	endTime, err := time.Parse(layoutBR, meetingInput.EndTime)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "end_time inválido"})
+		c.JSON(400, gin.H{"error": "invalid end_time"})
 		return
 	}
 
@@ -145,7 +145,7 @@ func (controller *MeetingController) UpdateController(c *gin.Context) {
 
 	meetingUpdate, err := controller.Service.UpdateMeeting(meeting, ownerID)
 	if err != nil {
-		if strings.Contains(err.Error(), "conflito de horario") {
+		if strings.Contains(err.Error(), "schedule conflict") {
 			c.JSON(409, gin.H{"error": err.Error()})
 			return
 		}
@@ -173,7 +173,7 @@ func (controller *MeetingController) DeleteMeeting(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "id inválido"})
+		c.JSON(400, gin.H{"error": "invalid id"})
 		return
 	}
 
@@ -181,9 +181,9 @@ func (controller *MeetingController) DeleteMeeting(c *gin.Context) {
 
 	err = controller.Service.DeleteMeeting(id, ownerID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "erro ao excluir reunião"})
+		c.JSON(400, gin.H{"error": "error deleting meeting"})
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "reunião excluida com sucesso"})
+	c.JSON(200, gin.H{"message": "meeting deleted successfully"})
 }

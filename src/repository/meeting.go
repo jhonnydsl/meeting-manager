@@ -94,7 +94,7 @@ func (r *MeetingRepository) DeleteMeeting(id, ownerID int) error {
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("nenhuma reunião encontrada para deletar")
+		return errors.New("no meeting found to delete")
 	}
 
 	return nil

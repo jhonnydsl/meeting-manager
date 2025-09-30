@@ -15,7 +15,7 @@ func SendInvitationEmail(to string, inv dtos.InvitationOutput) error {
 	pass := os.Getenv("SMTP_PASS")
 
 	subject := "Convite para reunião"
-	body := fmt.Sprintf("Você recebeu um convite para a reunião ID %d.\nStatus: %s", inv.ReuniaoID, inv.Status)
+	body := fmt.Sprintf("You have received a meeting invitation ID %d.\nStatus: %s", inv.ReuniaoID, inv.Status)
 
 	message := []byte("Subject: " + subject + "\r\n\r\n" + body)
 

@@ -39,27 +39,27 @@ func (controller *InvitationController) CreateInvitation(c *gin.Context) {
 	
 	createdInvitation, err := controller.Service.CreateInvitation(invitationInput, senderID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "erro ao criar convite"})
+		c.JSON(400, gin.H{"error": "error creating invitation"})
 		return
 	}
 
 	receiverEmail, err := controller.Service.ReturnUserByEmail(createdInvitation.ReceiverID)
 	if err != nil {
-		fmt.Println("Erro ao pegar email:", err)
+		fmt.Println("error fetching email:", err)
 	} else {
 		go func(invID int, email string) {
 			if err := utils.SendInvitationEmail(email, createdInvitation); err != nil {
-				fmt.Println("erro ao enviar email:", err)
+				fmt.Println("error sending email:", err)
 				return
 			} 
 			
 			if err := controller.Service.UpdateInvitationStatus(invID, "sent"); err != nil {
-				fmt.Println("erro ao atualizar status", err)
+				fmt.Println("error updating email", err)
 			}
 		}(createdInvitation.ID, receiverEmail)
 	}
 
-	c.JSON(201, gin.H{"message": "convite enviado com sucesso"})
+	c.JSON(201, gin.H{"message": "invitation sent successfully"})
 }
 
 // GetAllInvitations godoc
@@ -132,5 +132,5 @@ func (controller *InvitationController) DeleteInvitation(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "convite deletado com sucesso"})
+	c.JSON(200, gin.H{"message": "invitation deleted successfully"})
 }

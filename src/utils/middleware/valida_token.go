@@ -13,7 +13,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.JSON(401, gin.H{"error": "cabeçalho de autorização ausente"})
+			c.JSON(401, gin.H{"error": "authorization header missing"})
 			c.Abort()
 			return 
 		}
@@ -21,13 +21,13 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 		token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("método de assinatura não esperado")
+				return nil, fmt.Errorf("unexpected signing method")
 			}
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
 		if err != nil || !token.Valid {
-			c.JSON(401, gin.H{"error": "token invalido"})
+			c.JSON(401, gin.H{"error": "invalid token"})
 			c.Abort()
 			return 
 		}
@@ -41,7 +41,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			}
 		}
 
-		c.JSON(401, gin.H{"error": "userID invalido"})
+		c.JSON(401, gin.H{"error": "invalid userID"})
 		c.Abort()
 	}
 }
