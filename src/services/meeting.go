@@ -5,6 +5,7 @@ import (
 
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type MeetingService struct {
@@ -12,12 +13,8 @@ type MeetingService struct {
 }
 
 func (service *MeetingService) CreateMeeting(meeting dtos.Meeting, ownerID int) (dtos.MeetingOutput, error) {
-	if meeting.Title == "" || meeting.StartTime.IsZero() || meeting.EndTime.IsZero() {
-		return dtos.MeetingOutput{}, errors.New("error creating meeting, please fill in the required fields")
-	}
-
-	if meeting.StartTime.After(meeting.EndTime) {
-		return dtos.MeetingOutput{}, errors.New("start_time cannot be after end_time")
+	if err := utils.ValidateMeetingInput(meeting); err != nil {
+		return dtos.MeetingOutput{}, err
 	}
 
 	hasConflict, err := service.MeetingRepo.HasConflict(ownerID, meeting.StartTime, meeting.EndTime)
@@ -37,12 +34,8 @@ func (service *MeetingService) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput
 }
 
 func (service *MeetingService) UpdateMeeting(meeting dtos.MeetingOutput, ownerID int) (dtos.MeetingOutput, error) {
-	if meeting.Title == "" || meeting.StartTime.IsZero() || meeting.EndTime.IsZero() {
-		return dtos.MeetingOutput{}, errors.New("error updating meeting, please fill in the required fields")
-	}
-
-	if meeting.StartTime.After(meeting.EndTime) {
-		return dtos.MeetingOutput{}, errors.New("start_time cannot be after end_time")
+	if err := utils.ValidateMeetingOutput(meeting); err != nil {
+		return dtos.MeetingOutput{}, err
 	}
 
 	hasConflict, err := service.MeetingRepo.HasConflict(ownerID, meeting.StartTime, meeting.EndTime, meeting.ID)
