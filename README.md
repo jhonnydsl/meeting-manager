@@ -93,3 +93,9 @@ SMTP_PASS=yourpassword
 ## JWT
 JWT_SECRET=your_secret_key
 ```
+
+## Contato
+
+- Email: jhonny.s.l.12345@gmail.com
+- LinkedIn: www.linkedin.com/in/jhonny-da-silva-lima-354a6a16b
+- GitHub: https://github.com/jhonnydsl
