@@ -1,3 +1,5 @@
+![Views](https://komarev.com/ghpvc/?username=jhonnydsl/meeting-manager&label=Visitors&color=brightgreen&style=for-the-badge)
+
 # Meeting Management API
 
 A RESTful API built with **Go (Gin framework)** for managing users, meetings, and invitations.  
