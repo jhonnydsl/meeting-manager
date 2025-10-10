@@ -1,4 +1,4 @@
-![Views](https://komarev.com/ghpvc/?username=jhonnydsl/meeting-manager&label=Visitors&color=brightgreen&style=for-the-badge)
+![Repo Views](https://komarev.com/ghpvc/?username=meeting-manager&label=Repo%20views&color=0e75b6&style=flat)
 
 # Meeting Management API
 
