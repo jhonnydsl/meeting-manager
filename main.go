@@ -52,11 +52,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("error creating convites table: %v", err)
 	}
+
+	err = repo.CreateTableFriends()
+	if err != nil {
+		log.Fatalf("error creating friends table: %v", err)
+	}
 		
 	app := gin.Default()
 	routes.SetupRoutes(app)
 	routes.SetupRoutesMeeting(app)
 	routes.SetupRoutesInvitation(app)
+	routes.SetupRoutesFriend(app)
 		
 	app.Run(":8080")
 }

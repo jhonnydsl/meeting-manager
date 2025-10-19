@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  dtos.AddFriendInput:
+    properties:
+      friend_id:
+        type: integer
+    required:
+    - friend_id
+    type: object
   dtos.InvitationInput:
     properties:
       receiver_id:
@@ -109,6 +116,44 @@ info:
   title: Gerenciamento de Reuniões API
   version: "1.0"
 paths:
+  /friends:
+    post:
+      consumes:
+      - application/json
+      description: Envia uma solicitação de amizade ao id selecionado
+      parameters:
+      - description: Dados da solicitação
+        in: body
+        name: invitation
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AddFriendInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: request sent successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Envia solicitação de amizade
+      tags:
+      - friends
   /invitations:
     post:
       consumes:

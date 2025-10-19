@@ -54,3 +54,19 @@ func (r *TableRepository) CreateTableConvites() error {
 
 	return nil
 }
+
+func (r *TableRepository) CreateTableFriends() error {
+	query := `CREATE TABLE IF NOT EXISTS friends (
+	id SERIAL PRIMARY KEY,
+	user_id INT REFERENCES users(id),
+	friend_id INT REFERENCES users(id),
+	status VARCHAR(20) DEFAULT 'pending'
+	)`
+
+	_, err := DB.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
