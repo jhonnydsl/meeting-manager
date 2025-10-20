@@ -41,3 +41,25 @@ func (controller *FriendController) AddFriend(c *gin.Context) {
 
 	c.JSON(201, gin.H{"message": "request sent successfully"})
 }
+
+// GetFriends godoc
+// @Summary Lista todos os amigos do usuário logado
+// @Description Retorna uma lista de amigos do usuário autenticado.
+// @Tags friends
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} dtos.FriendOutput
+// @Failure 400 {object} map[string]string "user id invalid or query error"
+// @Failure 401 {object} map[string]string "user unauthorizad"
+// @Router /friends [get]
+func (controller *FriendController) GetFriends(c *gin.Context) {
+	userID := c.GetInt("userID")
+
+	friends, err := controller.Service.GetFriends(userID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, friends)
+}

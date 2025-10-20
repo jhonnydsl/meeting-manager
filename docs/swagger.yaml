@@ -7,6 +7,13 @@ definitions:
     required:
     - friend_id
     type: object
+  dtos.FriendOutput:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   dtos.InvitationInput:
     properties:
       receiver_id:
@@ -117,6 +124,34 @@ info:
   version: "1.0"
 paths:
   /friends:
+    get:
+      description: Retorna uma lista de amigos do usuário autenticado.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.FriendOutput'
+            type: array
+        "400":
+          description: user id invalid or query error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: user unauthorizad
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista todos os amigos do usuário logado
+      tags:
+      - friends
     post:
       consumes:
       - application/json

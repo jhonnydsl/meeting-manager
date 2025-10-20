@@ -15,5 +15,6 @@ func SetupRoutesFriend(app *gin.Engine) {
 	friends := app.Group("/friends", middleware.AuthMiddleware())
 	{
 		friends.POST("/", friendController.AddFriend)
+		friends.GET("/", friendController.GetFriends)
 	}
 }
