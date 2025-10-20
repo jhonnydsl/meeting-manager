@@ -2,8 +2,8 @@
 
 # Meeting Management API
 
-A RESTful API built with **Go (Gin framework)** for managing users, meetings, and invitations.  
-This project includes authentication, scheduling validation, and email notifications.
+A RESTful API built with Go **(Gin framework)** for managing users, meetings, invitations, and friends.
+The project includes authentication, scheduling validation, email notifications, and a dashboard to list all user meetings.
 
 ---
 
@@ -24,6 +24,10 @@ This project includes authentication, scheduling validation, and email notificat
   - Send and receive invitations
   - Email notifications for invitations
   - Accept or decline meeting invites
+
+- **Friends**
+
+  - Search and add users to your friends list
 
 - **Dashboard**
   - List all meetings of the logged-in user
@@ -57,6 +61,13 @@ This project includes authentication, scheduling validation, and email notificat
 - `user_id` (FK → users.id)
 - `status` (pending / accepted / declined)
 - `created_at`
+
+**Friends Table**
+
+- `id` (PK)
+- `user_id` (FK → users.id)
+- `friend_id` (FK → users.id)
+- `status` (pending / accepted / declined)
 
 ---
 
