@@ -1,5 +1,10 @@
 basePath: /
 definitions:
+  dtos.AcceptedFriend:
+    properties:
+      id:
+        type: integer
+    type: object
   dtos.AddFriendInput:
     properties:
       friend_id:
@@ -187,6 +192,72 @@ paths:
       security:
       - BearerAuth: []
       summary: Envia solicitação de amizade
+      tags:
+      - friends
+    put:
+      consumes:
+      - application/json
+      description: Aceita uma solicitação de amizade ao id selecionado
+      parameters:
+      - description: Dados da solicitação
+        in: body
+        name: invitation
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AcceptedFriend'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: request sent successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Aceita solicitação de amizade
+      tags:
+      - friends
+  /friends/pendings:
+    get:
+      description: Retorna uma lista de pedidos de amizade pendentes do usuário autenticado.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.FriendOutput'
+            type: array
+        "400":
+          description: user id invalid or query error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: user unauthorizad
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista todos os pedidos de amizade pendentes do usuário logado
       tags:
       - friends
   /invitations:

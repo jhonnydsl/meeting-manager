@@ -63,3 +63,57 @@ func (controller *FriendController) GetFriends(c *gin.Context) {
 
 	c.JSON(200, friends)
 }
+
+// GetFriendsPendings godoc
+// @Summary Lista todos os pedidos de amizade pendentes do usuário logado
+// @Description Retorna uma lista de pedidos de amizade pendentes do usuário autenticado.
+// @Tags friends
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} dtos.FriendOutput
+// @Failure 400 {object} map[string]string "user id invalid or query error"
+// @Failure 401 {object} map[string]string "user unauthorizad"
+// @Router /friends/pendings [get]
+func (controller *FriendController) GetFriendsPending(c *gin.Context) {
+	userID := c.GetInt("userID")
+
+	pendings, err := controller.Service.GetFriendsPending(userID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, pendings)
+}
+
+// AddFriend godoc
+// @Summary Aceita solicitação de amizade
+// @Description Aceita uma solicitação de amizade ao id selecionado
+// @Tags friends
+// @Accept json
+// @Produce json
+// @Param invitation body dtos.AcceptedFriend true "Dados da solicitação"
+// @Success 201 {object} map[string]string "request sent successfully"
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Router /friends [put]
+// @Security BearerAuth
+func (controller *FriendController) AcceptedFriend(c *gin.Context) {
+	var input dtos.AcceptedFriend
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	friendID := c.GetInt("userID")
+
+	err = controller.Service.AcceptedFriend(friendID, input.ID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(201, gin.H{"message": "invitation accepted!"})
+}

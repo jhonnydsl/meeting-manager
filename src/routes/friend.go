@@ -16,5 +16,7 @@ func SetupRoutesFriend(app *gin.Engine) {
 	{
 		friends.POST("/", friendController.AddFriend)
 		friends.GET("/", friendController.GetFriends)
+		friends.GET("/pendings", friendController.GetFriendsPending)
+		friends.PUT("/", friendController.AcceptedFriend)
 	}
 }
