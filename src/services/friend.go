@@ -30,3 +30,7 @@ func (service *FriendService) GetFriendsPending(userID int) ([]dtos.FriendOutput
 func (service *FriendService) AcceptedFriend(friendID, userID int) error {
 	return service.FriendRepo.AcceptFriend(friendID, userID)
 }
+
+func (service *FriendService) RefuseFriend(friendID, userID int) error {
+	return service.FriendRepo.RefuseFriend(friendID, userID)
+}

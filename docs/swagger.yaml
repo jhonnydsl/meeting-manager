@@ -194,6 +194,7 @@ paths:
       summary: Envia solicitação de amizade
       tags:
       - friends
+  /friends/accept:
     put:
       consumes:
       - application/json
@@ -209,7 +210,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: request sent successfully
+          description: invitation accepted!
           schema:
             additionalProperties:
               type: string
@@ -258,6 +259,44 @@ paths:
       security:
       - BearerAuth: []
       summary: Lista todos os pedidos de amizade pendentes do usuário logado
+      tags:
+      - friends
+  /friends/refused:
+    put:
+      consumes:
+      - application/json
+      description: Recusa uma solicitação de amizade ao id selecionado
+      parameters:
+      - description: Dados da solicitação
+        in: body
+        name: invitation
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AcceptedFriend'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: invitation refused!
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Recusa solicitação de amizade
       tags:
       - friends
   /invitations:

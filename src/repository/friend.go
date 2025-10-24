@@ -37,9 +37,9 @@ func (r *FriendRepository) GetFriends(userID int) ([]dtos.FriendOutput, error) {
 	query := `
 	SELECT u.id, u.name
 	FROM friends f
-	JOIN users u ON u.id = f.friend_id
-	WHERE f.user_id = $1 AND f.status = 'accepted'
-	;`
+	JOIN users u ON (u.id = f.friend_id AND f.user_id = $1) 
+    OR (u.id = f.user_id AND f.friend_id = $1)
+	WHERE f.status = 'accepted';`
 	var friends []dtos.FriendOutput
 
 	rows, err := DB.Query(query, userID)
@@ -70,8 +70,8 @@ func (r *FriendRepository) GetFriendsPending(userID int) ([]dtos.FriendOutput, e
 	query := `
 	SELECT u.id, u.name
 	FROM friends f
-	JOIN users u ON u.id = f.friend_id
-	WHERE f.user_id = $1 AND f.status = 'pending'
+	JOIN users u ON u.id = f.user_id
+	WHERE f.friend_id = $1 AND f.status = 'pending'
 	;`
 	var pendings []dtos.FriendOutput
 
@@ -104,7 +104,22 @@ func (r *FriendRepository) AcceptFriend(friendID, userID int) error {
 	UPDATE friends SET status = 'accepted' WHERE user_id = $1 AND friend_id = $2 AND status = 'pending'
 	;`
 
-	_, err := DB.Exec(query, friendID, userID)
+	_, err := DB.Exec(query, userID, friendID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *FriendRepository) RefuseFriend(friendID, userID int) error {
+	query := `
+	UPDATE friends
+	SET status = 'rejected'
+	WHERE user_id = $1 AND friend_id = $2 AND status = 'pending'
+	;`
+
+	_, err := DB.Exec(query, userID, friendID)
 	if err != nil {
 		return err
 	}

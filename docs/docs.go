@@ -60,13 +60,13 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Aceita uma solicitação de amizade ao id selecionado",
+                "description": "Envia uma solicitação de amizade ao id selecionado",
                 "consumes": [
                     "application/json"
                 ],
@@ -76,7 +76,7 @@ const docTemplate = `{
                 "tags": [
                     "friends"
                 ],
-                "summary": "Aceita solicitação de amizade",
+                "summary": "Envia solicitação de amizade",
                 "parameters": [
                     {
                         "description": "Dados da solicitação",
@@ -84,7 +84,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.AcceptedFriend"
+                            "$ref": "#/definitions/dtos.AddFriendInput"
                         }
                     }
                 ],
@@ -117,14 +117,16 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
+            }
+        },
+        "/friends/accept": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Envia uma solicitação de amizade ao id selecionado",
+                "description": "Aceita uma solicitação de amizade ao id selecionado",
                 "consumes": [
                     "application/json"
                 ],
@@ -134,7 +136,7 @@ const docTemplate = `{
                 "tags": [
                     "friends"
                 ],
-                "summary": "Envia solicitação de amizade",
+                "summary": "Aceita solicitação de amizade",
                 "parameters": [
                     {
                         "description": "Dados da solicitação",
@@ -142,13 +144,13 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.AddFriendInput"
+                            "$ref": "#/definitions/dtos.AcceptedFriend"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "request sent successfully",
+                        "description": "invitation accepted!",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -213,6 +215,66 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "user unauthorizad",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/friends/refused": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recusa uma solicitação de amizade ao id selecionado",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "friends"
+                ],
+                "summary": "Recusa solicitação de amizade",
+                "parameters": [
+                    {
+                        "description": "Dados da solicitação",
+                        "name": "invitation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.AcceptedFriend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "invitation refused!",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
