@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type FriendRepository struct{}
@@ -17,17 +16,17 @@ func (r *FriendRepository) AddFriend(userID, friendID int) error {
 	var count int
 	err := DB.QueryRow(existsQuery, userID, friendID).Scan(&count)
 	if err != nil {
-		return err
+		return utils.BadRequestError("error sending request")
 	}
 	if count > 0 {
-		return fmt.Errorf("existing friendship or invitation")
+		return utils.ConflictError("existing friendship or invitation")
 	}
 	
 	query := `INSERT INTO friends (user_id, friend_id, status) VALUES ($1, $2, 'pending');`
 
 	_, err = DB.Exec(query, userID, friendID)
 	if err != nil {
-		return err
+		return utils.BadRequestError("error sending request")
 	}
 
 	return nil
@@ -44,7 +43,7 @@ func (r *FriendRepository) GetFriends(userID int) ([]dtos.FriendOutput, error) {
 
 	rows, err := DB.Query(query, userID)
 	if err != nil {
-		return nil, err
+		return nil, utils.BadRequestError("error searching for friends")
 	}
 	defer rows.Close()
 
@@ -53,14 +52,14 @@ func (r *FriendRepository) GetFriends(userID int) ([]dtos.FriendOutput, error) {
 
 		err := rows.Scan(&i.ID, &i.Name)
 		if err != nil {
-			return nil, err
+			return nil, utils.InternalServerError("error searching for friends")
 		}
 
 		friends = append(friends, i)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, utils.InternalServerError("error searching for friends")
 	}
 
 	return friends, nil
@@ -77,7 +76,7 @@ func (r *FriendRepository) GetFriendsPending(userID int) ([]dtos.FriendOutput, e
 
 	rows, err := DB.Query(query, userID)
 	if err != nil {
-		return nil, err
+		return nil, utils.BadRequestError("it was not possible to search requests with the data received")
 	}
 	defer rows.Close()
 
@@ -86,14 +85,14 @@ func (r *FriendRepository) GetFriendsPending(userID int) ([]dtos.FriendOutput, e
 
 		err := rows.Scan(&i.ID, &i.Name)
 		if err != nil {
-			return nil, err
+			return nil, utils.InternalServerError("error listing pending requests")
 		}
 
 		pendings = append(pendings, i)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, utils.InternalServerError("error listing pending requests")
 	}
 
 	return pendings, nil
@@ -106,7 +105,7 @@ func (r *FriendRepository) AcceptFriend(friendID, userID int) error {
 
 	_, err := DB.Exec(query, userID, friendID)
 	if err != nil {
-		return err
+		return utils.BadRequestError("error accepting request")
 	}
 
 	return nil
@@ -121,7 +120,7 @@ func (r *FriendRepository) RefuseFriend(friendID, userID int) error {
 
 	_, err := DB.Exec(query, userID, friendID)
 	if err != nil {
-		return err
+		return utils.BadRequestError("error refusing request")
 	}
 
 	return nil

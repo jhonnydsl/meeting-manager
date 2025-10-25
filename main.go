@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/routes"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils/middleware"
 	"github.com/joho/godotenv"
 
 	_ "github.com/jhonnydsl/gerenciamento-de-reunioes/docs"
@@ -59,6 +60,8 @@ func main() {
 	}
 		
 	app := gin.Default()
+	app.Use(middleware.ErrorMiddlewareHandle())
+
 	routes.SetupRoutes(app)
 	routes.SetupRoutesMeeting(app)
 	routes.SetupRoutesInvitation(app)
