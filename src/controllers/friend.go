@@ -27,7 +27,7 @@ func (controller *FriendController) AddFriend(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -35,7 +35,7 @@ func (controller *FriendController) AddFriend(c *gin.Context) {
 
 	err = controller.Service.AddFriend(userID, input.FriendID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (controller *FriendController) GetFriends(c *gin.Context) {
 
 	friends, err := controller.Service.GetFriends(userID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -79,7 +79,7 @@ func (controller *FriendController) GetFriendsPending(c *gin.Context) {
 
 	pendings, err := controller.Service.GetFriendsPending(userID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -103,7 +103,7 @@ func (controller *FriendController) AcceptedFriend(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -111,7 +111,7 @@ func (controller *FriendController) AcceptedFriend(c *gin.Context) {
 
 	err = controller.Service.AcceptedFriend(friendID, input.ID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -135,7 +135,7 @@ func (controller *FriendController) RefuseFriend(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -143,7 +143,7 @@ func (controller *FriendController) RefuseFriend(c *gin.Context) {
 
 	err = controller.Service.RefuseFriend(friendID, input.ID)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
