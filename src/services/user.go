@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
@@ -34,16 +33,16 @@ func (service *UserService) GetAllUsers() ([]dtos.UserOutput, error) {
 func (service *UserService) LoginUser(login dtos.UserLoginInput) (string, error) {
 	userLogin, err := service.UserRepo.GetUserByEmail(login.Email)
 	if err != nil {
-		return "", fmt.Errorf("invalid email or password")
+		return "", utils.BadRequestError("invalid email or password")
 	}
 	
 	if err := utils.CheckPassword(userLogin.Password, login.Password); err != nil {
-		return "", errors.New("invalid email or password")
+		return "", utils.BadRequestError("invalid email or password")
 	}
 
 	tokenStr, err := utils.GenerateJWT(userLogin.ID, userLogin.Email)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
+		return "", utils.InternalServerError(fmt.Sprintf("failed to generate token: %v", err))
 	}
 
 	return tokenStr, nil
