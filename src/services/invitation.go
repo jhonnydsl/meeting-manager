@@ -1,10 +1,9 @@
 package services
 
 import (
-	"errors"
-
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type InvitationService struct {
@@ -13,7 +12,7 @@ type InvitationService struct {
 
 func (service *InvitationService) CreateInvitation(invitation dtos.InvitationInput, senderID int) (dtos.InvitationOutput, error) {
 	if invitation.ReuniaoID <= 0 || invitation.ReceiverID <= 0 {
-		return dtos.InvitationOutput{}, errors.New("reuniaoID e receiverID must be greater than zero")
+		return dtos.InvitationOutput{}, utils.BadRequestError("reuniaoID e receiverID must be greater than zero")
 	}
 
 	ownerID, err := service.InvitRepo.GetOwnerID(invitation.ReuniaoID)
@@ -22,7 +21,7 @@ func (service *InvitationService) CreateInvitation(invitation dtos.InvitationInp
 	}
 
 	if ownerID != senderID {
-		return dtos.InvitationOutput{}, errors.New("only the meeting owner can send invitations")
+		return dtos.InvitationOutput{}, utils.BadRequestError("only the meeting owner can send invitations")
 	}
 
 	return service.InvitRepo.CreateInvitation(invitation, senderID)
