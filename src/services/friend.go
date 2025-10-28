@@ -1,10 +1,9 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type FriendService struct {
@@ -13,7 +12,7 @@ type FriendService struct {
 
 func (service *FriendService) AddFriend(userID, friendID int) error {
 	if userID == friendID {
-		return fmt.Errorf("cannot add yourself as a friend")
+		return utils.BadRequestError("cannot add yourself as a friend")
 	}
 
 	return service.FriendRepo.AddFriend(userID, friendID)
