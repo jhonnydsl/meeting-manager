@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"errors"
-
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type InvitationRepository struct{}
@@ -21,7 +20,7 @@ func (r *InvitationRepository) CreateInvitation(invitation dtos.InvitationInput,
 		&createdInvitation.SenderID,
 	)
 	if err != nil {
-		return dtos.InvitationOutput{}, err
+		return dtos.InvitationOutput{}, utils.InternalServerError("error creating invitation")
 	}
 
 	return createdInvitation, nil
@@ -33,7 +32,7 @@ func (r *InvitationRepository) GetAllInvitations(senderID int) ([]dtos.Invitatio
 
 	rows, err := DB.Query(query, senderID)
 	if err != nil {
-		return nil, err
+		return nil, utils.InternalServerError("error fetching invitations")
 	}
 	defer rows.Close()
 
@@ -42,7 +41,7 @@ func (r *InvitationRepository) GetAllInvitations(senderID int) ([]dtos.Invitatio
 
 		err = rows.Scan(&i.ID, &i.ReuniaoID, &i.ReceiverID, &i.Status, &i.CreatedAt, &i.SenderID)
 		if err != nil {
-			return nil, err
+			return nil, utils.InternalServerError("error fetching invitations")
 		}
 
 		lista = append(lista, i)
@@ -57,7 +56,7 @@ func (r *InvitationRepository) GetReceiver(receiverID int) ([]dtos.InvitationOut
 
 	rows, err := DB.Query(query, receiverID)
 	if err != nil {
-		return nil, err
+		return nil, utils.InternalServerError("error fetching invitations")
 	}
 	defer rows.Close()
 
@@ -66,7 +65,7 @@ func (r *InvitationRepository) GetReceiver(receiverID int) ([]dtos.InvitationOut
 
 		err = rows.Scan(&i.ID, &i.ReuniaoID, &i.ReceiverID, &i.Status, &i.CreatedAt, &i.SenderID)
 		if err != nil {
-			return nil, err
+			return nil, utils.InternalServerError("error fetching invitations")
 		}
 
 		lista = append(lista, i)
@@ -81,7 +80,7 @@ func (r *InvitationRepository) GetOwnerID(meetingID int) (int, error) {
 
 	err := DB.QueryRow(query, meetingID).Scan(&ownerID)
 	if err != nil {
-		return 0, err
+		return 0, utils.InternalServerError("error fetching owner_id")
 	}
 
 	return ownerID, nil
@@ -92,7 +91,7 @@ func (r *InvitationRepository) DeleteInvitation(invitationID int, ownerID int ) 
 
 	result, err := DB.Exec(query, invitationID, ownerID)
 	if err != nil {
-		return err
+		return utils.InternalServerError("error deleting invitation")
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -101,7 +100,7 @@ func (r *InvitationRepository) DeleteInvitation(invitationID int, ownerID int ) 
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("no invitation deleted: either it doesn't exist or you are not the meeting owner")
+		return utils.NotFoundError("no invitation deleted or unauthorized user")
 	}
 
 	return nil
@@ -111,7 +110,11 @@ func (r *InvitationRepository) UpdateInvitationStatus(invitationID int, status s
 	query := `UPDATE convites SET status = $1 WHERE id = $2`
 	
 	_, err := DB.Exec(query, status, invitationID)
-	return err
+	if err != nil {
+		return utils.InternalServerError("error updating invitation")
+	}
+
+	return nil
 }
 
 func (r *InvitationRepository) ReturnUserByEmail(userID int) (string, error) {
@@ -120,7 +123,7 @@ func (r *InvitationRepository) ReturnUserByEmail(userID int) (string, error) {
 
 	err := DB.QueryRow(query, userID).Scan(&email)
 	if err != nil {
-		return "", errors.New("user not found")
+		return "", utils.NotFoundError("user not found")
 	}
 
 	return email, nil
