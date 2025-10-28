@@ -1,10 +1,10 @@
 package repository
 
 import (
-	"errors"
 	"time"
 
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type MeetingRepository struct{}
@@ -23,7 +23,7 @@ func (r *MeetingRepository) CreateMeeting(meeting dtos.Meeting, ownerId int) (dt
 		&createdMeeting.CreatedAt,
 	)
 	if err != nil {
-		return dtos.MeetingOutput{}, err
+		return dtos.MeetingOutput{}, utils.InternalServerError("error creating meeting")
 	}
 
 	return createdMeeting, nil
@@ -36,7 +36,7 @@ func (r *MeetingRepository) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput, e
 
 	rows, err := DB.Query(query, ownerID)
 	if err != nil {
-		return  nil, err
+		return  nil, utils.InternalServerError("error fetching meeting")
 	}
 	defer rows.Close()
 
@@ -45,14 +45,14 @@ func (r *MeetingRepository) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput, e
 
 		err = rows.Scan(&u.ID, &u.Title, &u.Description, &u.StartTime, &u.EndTime, &u.OwnerID, &u.CreatedAt)
 		if err != nil {
-			return nil, err
+			return nil, utils.InternalServerError("error fetching meeting")
 		}
 
 		lista = append(lista, u)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, utils.InternalServerError("error fetching meeting")
 	}
 
 	return lista, nil
@@ -74,7 +74,7 @@ func (r *MeetingRepository) UpdateMeeting(meeting dtos.MeetingOutput ,ownerID in
 		&updateMeeting.CreatedAt,
 	)
 	if err != nil {
-		return dtos.MeetingOutput{}, err
+		return dtos.MeetingOutput{}, utils.InternalServerError("error updating meeting")
 	}
 
 	return updateMeeting, nil
@@ -85,16 +85,16 @@ func (r *MeetingRepository) DeleteMeeting(id, ownerID int) error {
 
 	res, err := DB.Exec(query, id, ownerID)
 	if err != nil {
-		return err
+		return utils.InternalServerError("error deleting meeting")
 	}
 
 	rowsAffected, err := res.RowsAffected()
 	if err != nil {
-		return err
+		return utils.InternalServerError("error deleting meeting")
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("no meeting found to delete")
+		return utils.NotFoundError("no meeting found to delete")
 	}
 
 	return nil
@@ -114,7 +114,7 @@ func (r *MeetingRepository) HasConflict(ownerID int, start, end time.Time, exclu
 	var count int 
 	err := DB.QueryRow(query, args...).Scan(&count)
 	if err != nil {
-		return false, err
+		return false, utils.InternalServerError("error checking meeting conflicts")
 	}
 
 	return count > 0, nil
