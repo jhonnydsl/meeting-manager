@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils"
 )
 
 type UserRepository struct{}
@@ -12,7 +13,7 @@ func (r *UserRepository) CreateUser(user dtos.UserInput) (dtos.UserOutput, error
 
 	err := DB.QueryRow(query, user.Name, user.Email, user.Password).Scan(&createdUser.ID, &createdUser.Name, &createdUser.Email)
 	if err != nil {
-		return dtos.UserOutput{}, err
+		return dtos.UserOutput{}, utils.InternalServerError("error creating user")
 	}
 
 	return createdUser, nil
@@ -23,7 +24,7 @@ func (r *UserRepository) GetAllUsers() ([]dtos.UserOutput, error) {
 
 	rows, err := DB.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, utils.InternalServerError("error fetching users")
 	}
 	defer rows.Close()
 
@@ -34,7 +35,7 @@ func (r *UserRepository) GetAllUsers() ([]dtos.UserOutput, error) {
 
 		err = rows.Scan(&u.ID, &u.Name, &u.Email)
 		if err != nil {
-			return nil, err
+			return nil, utils.InternalServerError("error fetching users")
 		}
 
 		lista = append(lista, u)
@@ -50,7 +51,7 @@ func (r *UserRepository) GetUserByEmail(email string) (dtos.UserLogin, error) {
 	row := DB.QueryRow(query, email)
 
 	if err := row.Scan(&login.ID, &login.Name, &login.Email, &login.Password); err != nil {
-		return dtos.UserLogin{}, err
+		return dtos.UserLogin{}, utils.InternalServerError("error fetching user by email")
 	}
 
 	return login, nil
@@ -64,7 +65,7 @@ func (r *UserRepository) GetUserByID(id int) (dtos.UserOutput, error) {
 	row := DB.QueryRow(query, id)
 
 	if err := row.Scan(&user.ID, &user.Name, &user.Email); err != nil {
-		return dtos.UserOutput{}, err
+		return dtos.UserOutput{}, utils.InternalServerError("error fetching user by id")
 	}
 
 	return user, nil
@@ -75,7 +76,7 @@ func (r *UserRepository) DeleteUser(id int) error {
 
 	_, err := DB.Exec(query, id)
 	if err != nil {
-		return err
+		return utils.InternalServerError("error deleting user")
 	}
 
 	return nil
