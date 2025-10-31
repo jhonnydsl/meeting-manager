@@ -2,8 +2,8 @@
 
 # Meeting Management API
 
-A RESTful API built with Go **(Gin framework)** for managing users, meetings, invitations, and friends.
-The project includes authentication, scheduling validation, email notifications, and a dashboard to list all user meetings.
+A RESTful API built with Go **(Gin framework)** for managing users, meetings, invitations, and friends.  
+Now with **real-time video sessions** powered by **WebRTC** and **WebSocket** integration.
 
 ---
 
@@ -18,6 +18,7 @@ The project includes authentication, scheduling validation, email notifications,
 
   - Create, edit, list, and delete meetings
   - Time conflict validation (no overlapping schedules)
+  - **Real-time video/audio communication via WebRTC**
 
 - **Invitations**
 
@@ -28,11 +29,33 @@ The project includes authentication, scheduling validation, email notifications,
 - **Friends**
 
   - Search and add users to your friends list
+  - Accept or reject friend requests
 
 - **Dashboard**
   - List all meetings of the logged-in user
 
 ---
+
+## ⚡ Real-Time Communication
+
+The project now includes **WebRTC** integration for peer-to-peer communication and **WebSocket** signaling for message exchange.
+
+### How it works
+
+1. Clients connect to `/ws/:meetingID/:userID` through WebSocket.
+2. The server handles signaling between peers (offer, answer, ICE candidates).
+3. WebRTC establishes a direct connection for video/audio streaming.
+
+**Example WebSocket payload:**
+
+```json
+{
+  "type": "offer",
+  "meetingID": 1,
+  "userID": 1,
+  "data": "SDP_EXAMPLE"
+}
+```
 
 ## 🗄️ Database Schema
 
