@@ -20,6 +20,7 @@ type RTCSession struct {
 type RTCService struct {
 	Sessions map[int]*RTCSession
 	Mutex sync.Mutex
+	OnICECandidate func(meetingID, userID int, candidate string)
 }
 
 func NewRTCService() *RTCService {
@@ -28,7 +29,7 @@ func NewRTCService() *RTCService {
 	}
 }
 
-func (service *RTCService) CreateSession(meetingID int) (string, error) {
+func (service *RTCService) CreateSession(meetingID, userID int) (string, error) {
 	service.Mutex.Lock()
 	defer service.Mutex.Unlock()
 
@@ -59,8 +60,8 @@ func (service *RTCService) CreateSession(meetingID int) (string, error) {
 	}
 
 	pc.OnICECandidate(func(c *webrtc.ICECandidate) {
-		if c != nil {
-			// codigo que envia json via websocket
+		if c != nil && service.OnICECandidate != nil {
+			service.OnICECandidate(meetingID, userID, c.ToJSON().Candidate)
 		}
 	})
 
@@ -138,8 +139,8 @@ func (service *RTCService) JoinSession(meetingID, userID int, offerSDP string) (
 	}
 
 	pc.OnICECandidate(func(c *webrtc.ICECandidate) {
-		if c != nil {
-			// codigo que envia json via websocket
+		if c != nil && service.OnICECandidate != nil {
+			service.OnICECandidate(meetingID, userID, c.ToJSON().Candidate)
 		}
 	})
 
@@ -163,4 +164,21 @@ func (service *RTCService) LeaveSession(meetingID, userID int) {
 	}
 }
 
-//func AddIceCandidate(meetingID int, candidate string, userID int) error {}
+func (service *RTCService) AddIceCandidate(meetingID int, candidate string, userID int) error {
+	service.Mutex.Lock()
+	session, ok := service.Sessions[meetingID]
+	service.Mutex.Unlock()
+	if !ok {
+		return fmt.Errorf("session not found")
+	}
+
+	session.Mutex.Lock()
+	defer session.Mutex.Unlock()
+
+	p, exists := session.Participants[userID]
+	if !exists {
+		return fmt.Errorf("participant not found")
+	}
+
+	return p.PC.AddICECandidate(webrtc.ICECandidateInit{Candidate: candidate})
+}

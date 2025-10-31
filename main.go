@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/dtos"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/realtime"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/repository"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/routes"
+	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/services"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils/middleware"
 	"github.com/joho/godotenv"
 
@@ -66,6 +70,37 @@ func main() {
 	routes.SetupRoutesMeeting(app)
 	routes.SetupRoutesInvitation(app)
 	routes.SetupRoutesFriend(app)
-		
+
+	hub := realtime.NewHub()
+	go hub.Run()
+	rtcService := services.NewRTCService()
+
+	routes.SetupWebSocketsRoutes(app, hub, rtcService)
+
+	rtcService.OnICECandidate = func(meetingID, userID int, candidate string) {
+		hub.Mutex.Lock()
+		defer hub.Mutex.Unlock()
+
+		clients, ok := hub.Clients[meetingID]
+		if !ok {
+			return
+		}
+
+		client, ok := clients[userID]
+		if !ok {
+			return
+		}
+
+		msg := dtos.SignalMessage{
+			Type: "ice",
+			MeetingID: meetingID,
+			UserID: userID,
+			Data: candidate,
+		}
+
+		data, _ := json.Marshal(msg)
+		client.Send <- data
+	}
+	
 	app.Run(":8080")
 }
