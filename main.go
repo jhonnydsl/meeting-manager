@@ -65,6 +65,7 @@ func main() {
 		
 	app := gin.Default()
 	app.Use(middleware.ErrorMiddlewareHandle())
+	app.Use(middleware.Cors())
 
 	routes.SetupRoutes(app)
 	routes.SetupRoutesMeeting(app)

@@ -22,7 +22,7 @@ func SetupRoutes(app *gin.Engine) {
 
 	users := app.Group("/users")
 	{
-		users.POST("/", userController.CreateUser)
+		users.POST("", userController.CreateUser)
 		users.GET("/", middleware.AuthMiddleware(), userController.GetAllUsers)
 		users.GET("/profile", middleware.AuthMiddleware(), userController.GetProfile)
 		users.DELETE("/", middleware.AuthMiddleware(), userController.DeleteUser)
