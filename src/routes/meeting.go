@@ -15,7 +15,7 @@ func SetupRoutesMeeting(app *gin.Engine) {
 	meetings := app.Group("/meetings", middleware.AuthMiddleware())
 	{
 		meetings.POST("/", meetingController.CreateMeeting)
-		meetings.GET("/", meetingController.GetAllMeetings)
+		meetings.GET("", meetingController.GetAllMeetings)
 		meetings.PUT("/update", meetingController.UpdateController)
 		meetings.DELETE("/delete/:id", meetingController.DeleteMeeting)
 	}
