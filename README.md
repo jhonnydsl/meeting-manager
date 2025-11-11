@@ -1,4 +1,7 @@
-![Repo Views](https://komarev.com/ghpvc/?username=meeting-manager&label=Repo%20views&color=0e75b6&style=flat)
+![Go](https://img.shields.io/badge/Go-1.23-blue)
+![Gin](https://img.shields.io/badge/Framework-Gin-green)
+![Swagger](https://img.shields.io/badge/API-Swagger-yellow)
+![Repo Views](https://komarev.com/ghpvc/?username=jhonnydsl&label=Repo%20views&color=0e75b6&style=flat)
 
 # Meeting Management API
 
@@ -6,6 +9,18 @@ A RESTful API built with Go **(Gin framework)** for managing users, meetings, in
 Now with **real-time video sessions** powered by **WebRTC** and **WebSocket** integration.
 
 ---
+
+## 📘 API Documentation
+
+You can explore and test all endpoints through the Swagger UI:
+
+👉 [Open Swagger UI](http://localhost:8080/api/v1/swagger/index.html)
+
+> The documentation is automatically generated using **swaggo/gin-swagger**.
+
+## 📸 Preview
+
+<img src="./assets/preview.png" alt="App Preview" width="700"/>
 
 ## ✨ Features
 
@@ -100,6 +115,10 @@ The project now includes **WebRTC** integration for peer-to-peer communication a
 - **Database:** PostgreSQL
 - **Authentication:** JWT
 - **Email Notifications:** SMTP
+- **ORM/DB Access:** database/sql \* native queries
+- **Real-Time Communication:** WebRTC + WebSocket
+- **API Documentation:** Swagger (via swaggo/gin-swagger)
+- **Enviroment Configuration:** .env + godotenv
 
 ---
 
