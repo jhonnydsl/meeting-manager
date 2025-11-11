@@ -11,7 +11,6 @@ import (
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/routes"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/services"
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils/middleware"
-	"github.com/joho/godotenv"
 
 	_ "github.com/jhonnydsl/gerenciamento-de-reunioes/docs"
 )
@@ -27,13 +26,13 @@ func main() {
 	// @in header
 	// @name Authorization
 
-	err := godotenv.Load()
+	/*err := godotenv.Load()
 	if err != nil {
 		log.Println("error loading environment variables")
 		return
-	}
+	}*/
 	
-	err = repository.Connect()
+	err := repository.Connect()
 	if err != nil {
 		log.Fatalf("error connecting to the database: %v", err)
 	} else {
