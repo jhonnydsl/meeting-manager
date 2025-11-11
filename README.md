@@ -13,7 +13,7 @@ Now with **real-time video sessions** powered by **WebRTC** and **WebSocket** in
 
 You can explore and test all endpoints through the Swagger UI:
 
-👉 [Open Swagger UI](http://localhost:8080/api/v1/swagger/index.html)
+👉 [Open Swagger UI](https://meeting-manager-xzk7.onrender.com/api/v1/swagger/index.html)
 
 > The documentation is automatically generated using **swaggo/gin-swagger**.
 
