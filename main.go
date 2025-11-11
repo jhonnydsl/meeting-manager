@@ -41,22 +41,26 @@ func main() {
 	}
 	defer repository.DB.Close()
 		
-	/*repo := &repository.TableRepository{}	
+	repo := &repository.TableRepository{}
+
 	err = repo.CreateTableUsers()
 	if err != nil {
 		log.Fatalf("error creating users table: %v", err)
 	}	
+
 	err = repo.CreateTableReunioes()
 	if err != nil {
 		log.Fatalf("error creating reunioes table: %v", err)
 	}		
+
 	err = repo.CreateTableConvites()
 	if err != nil {		log.Fatalf("error creating convites table: %v", err)
 	}
+	
 	err = repo.CreateTableFriends()
 	if err != nil {
 		log.Fatalf("error creating friends table: %v", err)
-	}*/
+	}
 		
 	app := gin.Default()
 	app.Use(middleware.Cors())
