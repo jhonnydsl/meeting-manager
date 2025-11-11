@@ -8,7 +8,7 @@ import (
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils/middleware"
 )
 
-func SetupRoutesMeeting(app *gin.Engine) {
+func SetupRoutesMeeting(app *gin.RouterGroup) {
 	meetingService := &services.MeetingService{MeetingRepo: &repository.MeetingRepository{}}
 	meetingController := &controllers.MeetingController{Service: meetingService}
 

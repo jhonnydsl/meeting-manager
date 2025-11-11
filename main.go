@@ -41,36 +41,35 @@ func main() {
 	}
 	defer repository.DB.Close()
 		
-	repo := &repository.TableRepository{}
-		
+	/*repo := &repository.TableRepository{}	
 	err = repo.CreateTableUsers()
 	if err != nil {
 		log.Fatalf("error creating users table: %v", err)
-	}
-		
+	}	
 	err = repo.CreateTableReunioes()
 	if err != nil {
 		log.Fatalf("error creating reunioes table: %v", err)
-	}
-		
+	}		
 	err = repo.CreateTableConvites()
-	if err != nil {
-		log.Fatalf("error creating convites table: %v", err)
+	if err != nil {		log.Fatalf("error creating convites table: %v", err)
 	}
-
 	err = repo.CreateTableFriends()
 	if err != nil {
 		log.Fatalf("error creating friends table: %v", err)
-	}
+	}*/
 		
 	app := gin.Default()
 	app.Use(middleware.Cors())
 	app.Use(middleware.ErrorMiddlewareHandle())
 
-	routes.SetupRoutes(app)
-	routes.SetupRoutesMeeting(app)
-	routes.SetupRoutesInvitation(app)
-	routes.SetupRoutesFriend(app)
+	v1 := app.Group("/api/v1")
+	{
+		routes.SetupUserRoutes(v1)
+		routes.SetupRoutesMeeting(v1)
+		routes.SetupRoutesInvitation(v1)
+		routes.SetupRoutesFriend(v1)
+	}
+
 
 	hub := realtime.NewHub()
 	go hub.Run()

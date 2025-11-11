@@ -8,7 +8,7 @@ import (
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils/middleware"
 )
 
-func SetupRoutesFriend(app *gin.Engine) {
+func SetupRoutesFriend(app *gin.RouterGroup) {
 	friendService := &services.FriendService{FriendRepo: &repository.FriendRepository{}}
 	friendController := &controllers.FriendController{Service: friendService}
 

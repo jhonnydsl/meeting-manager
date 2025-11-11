@@ -8,7 +8,7 @@ import (
 	"github.com/jhonnydsl/gerenciamento-de-reunioes/src/utils/middleware"
 )
 
-func SetupRoutesInvitation(app *gin.Engine) {
+func SetupRoutesInvitation(app *gin.RouterGroup) {
 	invitationService := &services.InvitationService{InvitRepo: &repository.InvitationRepository{}}
 	invitationController := &controllers.InvitationController{Service: invitationService}
 

@@ -10,7 +10,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupRoutes(app *gin.Engine) {
+func SetupUserRoutes(app *gin.RouterGroup) {
 	userService := &services.UserService{UserRepo: &repository.UserRepository{}}
 	userController := &controllers.UserController{Service: userService}
 
