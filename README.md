@@ -1,7 +1,6 @@
 ![Go](https://img.shields.io/badge/Go-1.23-blue)
 ![Gin](https://img.shields.io/badge/Framework-Gin-green)
 ![Swagger](https://img.shields.io/badge/API-Swagger-yellow)
-![Repo Views](https://komarev.com/ghpvc/?username=jhonnydsl&label=Repo%20views&color=0e75b6&style=flat)
 
 # Meeting Management API
 
