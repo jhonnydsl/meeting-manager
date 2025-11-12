@@ -1,1134 +1,1028 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "API para gerenciar usuários, reuniões e convites",
-        "title": "Gerenciamento de Reuniões API",
-        "contact": {},
-        "version": "1.0"
-    },
-    "host": "https://meeting-manager-xzk7.onrender.com",
-    "basePath": "/api/v1",
-    "paths": {
-        "/friends": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna uma lista de amigos do usuário autenticado.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "friends"
-                ],
-                "summary": "Lista todos os amigos do usuário logado",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.FriendOutput"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "user id invalid or query error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "user unauthorizad",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Envia uma solicitação de amizade ao id selecionado",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "friends"
-                ],
-                "summary": "Envia solicitação de amizade",
-                "parameters": [
-                    {
-                        "description": "Dados da solicitação",
-                        "name": "invitation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.AddFriendInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "request sent successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
+  "swagger": "2.0",
+  "info": {
+    "description": "API para gerenciar usuários, reuniões e convites",
+    "title": "Gerenciamento de Reuniões API",
+    "contact": {},
+    "version": "1.0"
+  },
+  "host": "meeting-manager-xzk7.onrender.com",
+  "basePath": "/api/v1",
+  "paths": {
+    "/friends": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retorna uma lista de amigos do usuário autenticado.",
+        "produces": ["application/json"],
+        "tags": ["friends"],
+        "summary": "Lista todos os amigos do usuário logado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.FriendOutput"
+              }
             }
-        },
-        "/friends/accept": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Aceita uma solicitação de amizade ao id selecionado",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "friends"
-                ],
-                "summary": "Aceita solicitação de amizade",
-                "parameters": [
-                    {
-                        "description": "Dados da solicitação",
-                        "name": "invitation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.AcceptedFriend"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "invitation accepted!",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
+          },
+          "400": {
+            "description": "user id invalid or query error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
-        },
-        "/friends/pendings": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna uma lista de pedidos de amizade pendentes do usuário autenticado.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "friends"
-                ],
-                "summary": "Lista todos os pedidos de amizade pendentes do usuário logado",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.FriendOutput"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "user id invalid or query error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "user unauthorizad",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
+          },
+          "401": {
+            "description": "user unauthorizad",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
-        },
-        "/friends/refused": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Recusa uma solicitação de amizade ao id selecionado",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "friends"
-                ],
-                "summary": "Recusa solicitação de amizade",
-                "parameters": [
-                    {
-                        "description": "Dados da solicitação",
-                        "name": "invitation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.AcceptedFriend"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "invitation refused!",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/invitations": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Cria um convite para outro usuário participar de uma reunião",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "invitations"
-                ],
-                "summary": "Cria um novo convite",
-                "parameters": [
-                    {
-                        "description": "Dados do convite",
-                        "name": "invitation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.InvitationInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.InvitationOutput"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/invitations/received": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna uma lista de convites em que o usuário autenticado recebeu (receiver).",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "invitations"
-                ],
-                "summary": "Lista todos os convites recebidos pelo usuário logado",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.InvitationOutput"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "id do usuário inválido ou erro de query",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "usuário não autenticado",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/invitations/sent": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna uma lista de convites em que o usuário autenticado é o remetente (sender).",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "invitations"
-                ],
-                "summary": "Lista todos os convites enviados pelo usuário logado",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.InvitationOutput"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "id do usuário inválido ou erro de query",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "usuário não autenticado",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/invitations/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Permite que apenas o dono da reunião exclua um convite",
-                "tags": [
-                    "invitations"
-                ],
-                "summary": "Excluir convite",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID do convite",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "convite deletado com sucesso",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "erro ao excluir convite",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "usuário não autenticado",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/login": {
-            "post": {
-                "description": "Faz login com email e senha e retorna um token JWT",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Autentica um usuário",
-                "parameters": [
-                    {
-                        "description": "Dados para login",
-                        "name": "login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.UserLoginInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Token JWT",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/meetings": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna apenas as reuniões criadas pelo usuário logado",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "meetings"
-                ],
-                "summary": "Lista todas as reuniões do usuário autenticado",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.MeetingOutput"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "usuário não autenticado ou id inválido",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "erro ao buscar reuniões",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Cria uma reunião com título, descrição, horário de início e fim. O usuário logado será o proprietário (owner).",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "meetings"
-                ],
-                "summary": "Cria uma nova reunião",
-                "parameters": [
-                    {
-                        "description": "Dados da reunião",
-                        "name": "meeting",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.MeetingInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.MeetingOutput"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/meetings/delete/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Remove uma reunião existente",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "meetings"
-                ],
-                "summary": "Deletar reunião",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID da reunião",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "reunião excluída com sucesso",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "id inválido ou erro na exclusão",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "usuário não autenticado",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "reunião não encontrada",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/meetings/update": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Atualiza os dados de uma reunião (título, descrição, horários). O usuário logado deve ser o dono da reunião.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "meetings"
-                ],
-                "summary": "Atualiza uma reunião",
-                "parameters": [
-                    {
-                        "description": "Dados da reunião com ID",
-                        "name": "meeting",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.UpdateMeeting"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.MeetingOutput"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna todos os usuários cadastrados",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Lista todos os usuários",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.UserOutput"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Cria um usuário com nome, email e senha",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Cria um novo usuário",
-                "parameters": [
-                    {
-                        "description": "Dados do usuário",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dtos.UserInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.UserOutput"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Deleta o usuário logado a partir do token JWT",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Deleta o usuário autenticado",
-                "responses": {
-                    "200": {
-                        "description": "Mensagem de sucesso",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Erro ao deletar usuário",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Usuário não autenticado",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users/profile": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Obtém os dados do usuário logado a partir do token JWT",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Retorna o perfil do usuário autenticado",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.UserOutput"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
+          }
         }
-    },
-    "definitions": {
-        "dtos.AcceptedFriend": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
+      },
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Envia uma solicitação de amizade ao id selecionado",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["friends"],
+        "summary": "Envia solicitação de amizade",
+        "parameters": [
+          {
+            "description": "Dados da solicitação",
+            "name": "invitation",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.AddFriendInput"
             }
-        },
-        "dtos.AddFriendInput": {
-            "type": "object",
-            "required": [
-                "friend_id"
-            ],
-            "properties": {
-                "friend_id": {
-                    "type": "integer"
-                }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "request sent successfully",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
-        },
-        "dtos.FriendOutput": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
-        },
-        "dtos.InvitationInput": {
-            "type": "object",
-            "required": [
-                "receiver_id",
-                "reuniao_id"
-            ],
-            "properties": {
-                "receiver_id": {
-                    "type": "integer"
-                },
-                "reuniao_id": {
-                    "type": "integer"
-                }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             }
-        },
-        "dtos.InvitationOutput": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "receiver_id": {
-                    "type": "integer"
-                },
-                "reuniao_id": {
-                    "type": "integer"
-                },
-                "sender_id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.MeetingInput": {
-            "type": "object",
-            "required": [
-                "end_time",
-                "start_time",
-                "title"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "start_time": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.MeetingOutput": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "owner_id": {
-                    "type": "integer"
-                },
-                "start_time": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.UpdateMeeting": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "endTime": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "startTime": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.UserInput": {
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.UserLoginInput": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.UserOutput": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
+          }
         }
+      }
     },
-    "securityDefinitions": {
-        "BearerAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+    "/friends/accept": {
+      "put": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Aceita uma solicitação de amizade ao id selecionado",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["friends"],
+        "summary": "Aceita solicitação de amizade",
+        "parameters": [
+          {
+            "description": "Dados da solicitação",
+            "name": "invitation",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.AcceptedFriend"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "invitation accepted!",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
         }
+      }
+    },
+    "/friends/pendings": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retorna uma lista de pedidos de amizade pendentes do usuário autenticado.",
+        "produces": ["application/json"],
+        "tags": ["friends"],
+        "summary": "Lista todos os pedidos de amizade pendentes do usuário logado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.FriendOutput"
+              }
+            }
+          },
+          "400": {
+            "description": "user id invalid or query error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "user unauthorizad",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/friends/refused": {
+      "put": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Recusa uma solicitação de amizade ao id selecionado",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["friends"],
+        "summary": "Recusa solicitação de amizade",
+        "parameters": [
+          {
+            "description": "Dados da solicitação",
+            "name": "invitation",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.AcceptedFriend"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "invitation refused!",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitations": {
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Cria um convite para outro usuário participar de uma reunião",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["invitations"],
+        "summary": "Cria um novo convite",
+        "parameters": [
+          {
+            "description": "Dados do convite",
+            "name": "invitation",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.InvitationInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dtos.InvitationOutput"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitations/received": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retorna uma lista de convites em que o usuário autenticado recebeu (receiver).",
+        "produces": ["application/json"],
+        "tags": ["invitations"],
+        "summary": "Lista todos os convites recebidos pelo usuário logado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.InvitationOutput"
+              }
+            }
+          },
+          "400": {
+            "description": "id do usuário inválido ou erro de query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "usuário não autenticado",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitations/sent": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retorna uma lista de convites em que o usuário autenticado é o remetente (sender).",
+        "produces": ["application/json"],
+        "tags": ["invitations"],
+        "summary": "Lista todos os convites enviados pelo usuário logado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.InvitationOutput"
+              }
+            }
+          },
+          "400": {
+            "description": "id do usuário inválido ou erro de query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "usuário não autenticado",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitations/{id}": {
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Permite que apenas o dono da reunião exclua um convite",
+        "tags": ["invitations"],
+        "summary": "Excluir convite",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "ID do convite",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "convite deletado com sucesso",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "erro ao excluir convite",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "usuário não autenticado",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "Faz login com email e senha e retorna um token JWT",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["users"],
+        "summary": "Autentica um usuário",
+        "parameters": [
+          {
+            "description": "Dados para login",
+            "name": "login",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.UserLoginInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token JWT",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meetings": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retorna apenas as reuniões criadas pelo usuário logado",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["meetings"],
+        "summary": "Lista todas as reuniões do usuário autenticado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.MeetingOutput"
+              }
+            }
+          },
+          "400": {
+            "description": "usuário não autenticado ou id inválido",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "erro ao buscar reuniões",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Cria uma reunião com título, descrição, horário de início e fim. O usuário logado será o proprietário (owner).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["meetings"],
+        "summary": "Cria uma nova reunião",
+        "parameters": [
+          {
+            "description": "Dados da reunião",
+            "name": "meeting",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.MeetingInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dtos.MeetingOutput"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meetings/delete/{id}": {
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Remove uma reunião existente",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["meetings"],
+        "summary": "Deletar reunião",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "ID da reunião",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "reunião excluída com sucesso",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "id inválido ou erro na exclusão",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "usuário não autenticado",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "reunião não encontrada",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meetings/update": {
+      "put": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Atualiza os dados de uma reunião (título, descrição, horários). O usuário logado deve ser o dono da reunião.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["meetings"],
+        "summary": "Atualiza uma reunião",
+        "parameters": [
+          {
+            "description": "Dados da reunião com ID",
+            "name": "meeting",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.UpdateMeeting"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dtos.MeetingOutput"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retorna todos os usuários cadastrados",
+        "produces": ["application/json"],
+        "tags": ["users"],
+        "summary": "Lista todos os usuários",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dtos.UserOutput"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Cria um usuário com nome, email e senha",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["users"],
+        "summary": "Cria um novo usuário",
+        "parameters": [
+          {
+            "description": "Dados do usuário",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dtos.UserInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dtos.UserOutput"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Deleta o usuário logado a partir do token JWT",
+        "produces": ["application/json"],
+        "tags": ["users"],
+        "summary": "Deleta o usuário autenticado",
+        "responses": {
+          "200": {
+            "description": "Mensagem de sucesso",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao deletar usuário",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário não autenticado",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Obtém os dados do usuário logado a partir do token JWT",
+        "produces": ["application/json"],
+        "tags": ["users"],
+        "summary": "Retorna o perfil do usuário autenticado",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dtos.UserOutput"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "dtos.AcceptedFriend": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "dtos.AddFriendInput": {
+      "type": "object",
+      "required": ["friend_id"],
+      "properties": {
+        "friend_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "dtos.FriendOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.InvitationInput": {
+      "type": "object",
+      "required": ["receiver_id", "reuniao_id"],
+      "properties": {
+        "receiver_id": {
+          "type": "integer"
+        },
+        "reuniao_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "dtos.InvitationOutput": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "receiver_id": {
+          "type": "integer"
+        },
+        "reuniao_id": {
+          "type": "integer"
+        },
+        "sender_id": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.MeetingInput": {
+      "type": "object",
+      "required": ["end_time", "start_time", "title"],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "end_time": {
+          "type": "string"
+        },
+        "start_time": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.MeetingOutput": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "end_time": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "owner_id": {
+          "type": "integer"
+        },
+        "start_time": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.UpdateMeeting": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "endTime": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "startTime": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.UserInput": {
+      "type": "object",
+      "required": ["email", "name", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.UserLoginInput": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "dtos.UserOutput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
 }
