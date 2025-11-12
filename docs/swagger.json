@@ -6,8 +6,8 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
-    "basePath": "/",
+    "host": "https://meeting-manager-xzk7.onrender.com",
+    "basePath": "/api/v1",
     "paths": {
         "/friends": {
             "get": {

@@ -19,8 +19,8 @@ func main() {
 	// @title Gerenciamento de Reuniões API
 	// @version 1.0
 	// @description API para gerenciar usuários, reuniões e convites
-	// @host localhost:8080
-	// @BasePath /
+	// @host https://meeting-manager-xzk7.onrender.com
+	// @BasePath /api/v1
 
 	// @securityDefinitions.apikey BearerAuth
 	// @in header

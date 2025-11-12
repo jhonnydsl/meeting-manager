@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api/v1
 definitions:
   dtos.AcceptedFriend:
     properties:
@@ -121,7 +121,7 @@ definitions:
       name:
         type: string
     type: object
-host: localhost:8080
+host: https://meeting-manager-xzk7.onrender.com
 info:
   contact: {}
   description: API para gerenciar usuários, reuniões e convites
