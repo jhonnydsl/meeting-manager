@@ -121,7 +121,7 @@ definitions:
       name:
         type: string
     type: object
-host: https://meeting-manager-xzk7.onrender.com
+host: meeting-manager-xzk7.onrender.com
 info:
   contact: {}
   description: API para gerenciar usuários, reuniões e convites

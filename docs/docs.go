@@ -1142,7 +1142,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "https://meeting-manager-xzk7.onrender.com",
+	Host:             "meeting-manager-xzk7.onrender.com",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Gerenciamento de Reuniões API",
