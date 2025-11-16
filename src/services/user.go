@@ -40,7 +40,7 @@ func (service *UserService) LoginUser(login dtos.UserLoginInput) (string, error)
 		return "", utils.BadRequestError("invalid email or password")
 	}
 
-	tokenStr, err := utils.GenerateJWT(userLogin.ID, userLogin.Email)
+	tokenStr, err := utils.GenerateJWT(userLogin.ID, userLogin.Email, userLogin.Name)
 	if err != nil {
 		return "", utils.InternalServerError(fmt.Sprintf("failed to generate token: %v", err))
 	}
