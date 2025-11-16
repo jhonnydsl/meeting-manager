@@ -120,30 +120,19 @@ func (controller *MeetingController) UpdateController(c *gin.Context) {
 
 	layoutBR := "02/01/2006 15:04"
 
-	startTime, err := time.Parse(layoutBR, meetingInput.StartTime)
-	if err != nil {
+	if _, err := time.Parse(layoutBR, meetingInput.StartTime); err != nil {
 		c.JSON(400, gin.H{"error": "invalid start_time"})
 		return
 	}
 
-	endTime, err := time.Parse(layoutBR, meetingInput.EndTime)
-	if err != nil {
+	if _, err := time.Parse(layoutBR, meetingInput.EndTime); err != nil {
 		c.JSON(400, gin.H{"error": "invalid end_time"})
 		return
 	}
 
 	ownerID := c.GetInt("userID")
 
-	meeting := dtos.MeetingOutput{
-		ID: meetingInput.ID,
-		Title: meetingInput.Title,
-		Description: meetingInput.Description,
-		StartTime: startTime,
-		EndTime: endTime,
-		OwnerID: ownerID,
-	}
-
-	meetingUpdate, err := controller.Service.UpdateMeeting(meeting, ownerID)
+	meetingUpdate, err := controller.Service.UpdateMeeting(meetingInput, ownerID)
 	if err != nil {
 		if strings.Contains(err.Error(), "schedule conflict") {
 			c.JSON(409, gin.H{"error": err.Error()})
