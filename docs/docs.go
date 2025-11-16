@@ -712,7 +712,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/meetings/update": {
+        "/meetings/update/{id}": {
             "put": {
                 "security": [
                     {
@@ -1069,9 +1069,6 @@ const docTemplate = `{
                 },
                 "endTime": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "startTime": {
                     "type": "string"

@@ -107,7 +107,7 @@ func (controller *MeetingController) GetAllMeetings(c *gin.Context) {
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /meetings/update [put]
+// @Router /meetings/update/{id} [put]
 // @Security BearerAuth
 func (controller *MeetingController) UpdateController(c *gin.Context) {
     idParam := c.Param("id")

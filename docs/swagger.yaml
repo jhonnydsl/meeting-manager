@@ -82,8 +82,6 @@ definitions:
         type: string
       endTime:
         type: string
-      id:
-        type: integer
       startTime:
         type: string
       title:
@@ -574,7 +572,7 @@ paths:
       summary: Deletar reunião
       tags:
       - meetings
-  /meetings/update:
+  /meetings/update/{id}:
     put:
       consumes:
       - application/json
