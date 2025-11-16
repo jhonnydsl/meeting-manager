@@ -33,8 +33,8 @@ func (service *MeetingService) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput
 	return service.MeetingRepo.GetAllMeetings(ownerID)
 }
 
-func (service *MeetingService) UpdateMeeting(input dtos.UpdateMeeting, ownerID int) (dtos.MeetingOutput, error) {
-	if input.ID == 0 {
+func (service *MeetingService) UpdateMeeting(input dtos.UpdateMeeting, meetingID, ownerID int) (dtos.MeetingOutput, error) {
+	if meetingID == 0 {
 		return dtos.MeetingOutput{}, utils.BadRequestError("invalid meeting id")
 	}
 
@@ -48,7 +48,7 @@ func (service *MeetingService) UpdateMeeting(input dtos.UpdateMeeting, ownerID i
 		return dtos.MeetingOutput{}, utils.BadRequestError("invalid end_time")
 	}
 
-	hasConflict, err := service.MeetingRepo.HasConflict(ownerID, start, end, input.ID)
+	hasConflict, err := service.MeetingRepo.HasConflict(ownerID, start, end, meetingID)
 	if err != nil {
 		return dtos.MeetingOutput{}, err
 	}
@@ -57,16 +57,16 @@ func (service *MeetingService) UpdateMeeting(input dtos.UpdateMeeting, ownerID i
 		return dtos.MeetingOutput{}, utils.ConflictError("schedule conflict: there is already a meeting during this time range")
 	}
 
-	meeting := dtos.MeetingOutput{
-		ID: input.ID,
+	/*meeting := dtos.MeetingOutput{
+		ID: meetingID,
 		Title: input.Title,
-		Description: input.Description,
+		Description: input.Description,gi
 		StartTime: start,
 		EndTime: end,
 		OwnerID: ownerID,
-	}
+	}*/
 
-	return service.MeetingRepo.UpdateMeeting(meeting, ownerID)
+	return service.MeetingRepo.UpdateMeeting(input, meetingID, ownerID, start, end)
 }
 
 func (service *MeetingService) DeleteMeeting(id, ownerID int) error {

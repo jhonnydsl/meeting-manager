@@ -58,26 +58,39 @@ func (r *MeetingRepository) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput, e
 	return lista, nil
 }
 
-func (r *MeetingRepository) UpdateMeeting(meeting dtos.MeetingOutput ,ownerID int) (dtos.MeetingOutput, error) {
-	query := `UPDATE reunioes SET title = $1, description = $2, start_time = $3, end_time = $4 WHERE id = $5 AND owner_id = $6
-	RETURNING title, description, start_time, end_time, owner_id, created_at`
+func (r *MeetingRepository) UpdateMeeting(meetingInput dtos.UpdateMeeting, meetingID int, ownerID int, start time.Time, end time.Time) (dtos.MeetingOutput, error) {
+    query := `
+        UPDATE reunioes
+        SET title = $1, description = $2, start_time = $3, end_time = $4
+        WHERE id = $5 AND owner_id = $6
+        RETURNING id, title, description, start_time, end_time, owner_id, created_at
+    `
 
-	var updateMeeting dtos.MeetingOutput
+    var updated dtos.MeetingOutput
 
-	// Execute update and return updated meeting data.
-	err := DB.QueryRow(query, meeting.Title, meeting.Description, meeting.StartTime, meeting.EndTime, meeting.ID, ownerID).Scan(
-		&updateMeeting.Title,
-		&updateMeeting.Description,
-		&updateMeeting.StartTime,
-		&updateMeeting.EndTime,
-		&updateMeeting.OwnerID,
-		&updateMeeting.CreatedAt,
-	)
-	if err != nil {
-		return dtos.MeetingOutput{}, utils.InternalServerError("error updating meeting")
-	}
+    err := DB.QueryRow(
+        query,
+        meetingInput.Title,
+        meetingInput.Description,
+        start,
+        end,
+        meetingID,
+        ownerID,
+    ).Scan(
+        &updated.ID,
+        &updated.Title,
+        &updated.Description,
+        &updated.StartTime,
+        &updated.EndTime,
+        &updated.OwnerID,
+        &updated.CreatedAt,
+    )
 
-	return updateMeeting, nil
+    if err != nil {
+        return dtos.MeetingOutput{}, utils.InternalServerError("error updating meeting")
+    }
+
+    return updated, nil
 }
 
 func (r *MeetingRepository) DeleteMeeting(id, ownerID int) error {

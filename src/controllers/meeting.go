@@ -110,40 +110,44 @@ func (controller *MeetingController) GetAllMeetings(c *gin.Context) {
 // @Router /meetings/update [put]
 // @Security BearerAuth
 func (controller *MeetingController) UpdateController(c *gin.Context) {
-	var meetingInput dtos.UpdateMeeting
+    idParam := c.Param("id")
+    meetingID, err := strconv.Atoi(idParam)
+    if err != nil {
+        c.JSON(400, gin.H{"error": "invalid id"})
+        return
+    }
 
-	err := c.ShouldBindJSON(&meetingInput)
-	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
-	}
+    var meetingInput dtos.UpdateMeeting
+    if err := c.ShouldBindJSON(&meetingInput); err != nil {
+        c.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
 
-	layoutBR := "02/01/2006 15:04"
+    layoutBR := "02/01/2006 15:04"
 
-	if _, err := time.Parse(layoutBR, meetingInput.StartTime); err != nil {
-		c.JSON(400, gin.H{"error": "invalid start_time"})
-		return
-	}
+    if _, err := time.Parse(layoutBR, meetingInput.StartTime); err != nil {
+        c.JSON(400, gin.H{"error": "invalid start_time"})
+        return
+    }
 
-	if _, err := time.Parse(layoutBR, meetingInput.EndTime); err != nil {
-		c.JSON(400, gin.H{"error": "invalid end_time"})
-		return
-	}
+    if _, err := time.Parse(layoutBR, meetingInput.EndTime); err != nil {
+        c.JSON(400, gin.H{"error": "invalid end_time"})
+        return
+    }
 
-	ownerID := c.GetInt("userID")
+    ownerID := c.GetInt("userID")
 
-	meetingUpdate, err := controller.Service.UpdateMeeting(meetingInput, ownerID)
-	if err != nil {
-		if strings.Contains(err.Error(), "schedule conflict") {
-			c.JSON(409, gin.H{"error": err.Error()})
-			return
-		}
+    updated, err := controller.Service.UpdateMeeting(meetingInput, meetingID, ownerID)
+    if err != nil {
+        if strings.Contains(err.Error(), "schedule conflict") {
+            c.JSON(409, gin.H{"error": err.Error()})
+            return
+        }
+        c.JSON(500, gin.H{"error": err.Error()})
+        return
+    }
 
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(200, meetingUpdate)
+    c.JSON(200, updated)
 }
 
 // @Summary Deletar reunião

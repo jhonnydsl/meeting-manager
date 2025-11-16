@@ -16,7 +16,7 @@ func SetupRoutesMeeting(app *gin.RouterGroup) {
 	{
 		meetings.POST("", meetingController.CreateMeeting)
 		meetings.GET("", meetingController.GetAllMeetings)
-		meetings.PUT("/update", meetingController.UpdateController)
+		meetings.PUT("/update/:id", meetingController.UpdateController)
 		meetings.DELETE("/delete/:id", meetingController.DeleteMeeting)
 	}
 }
