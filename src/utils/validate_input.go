@@ -24,6 +24,10 @@ func ValidateMeetingInput(meeting dtos.Meeting) error {
 		return errors.New("title must not empty")
 	}
 
+	if meeting.Status != "started" && meeting.Status != "finished" && meeting.Status != "canceled" && meeting.Status != "scheduled" {
+		return errors.New("status invalid")
+	}
+
 	if meeting.StartTime.IsZero() || meeting.EndTime.IsZero() {
 		return errors.New("start_time and end_time is required")
 	}

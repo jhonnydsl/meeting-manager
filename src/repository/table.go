@@ -24,6 +24,7 @@ func (r *TableRepository) CreateTableReunioes() error {
 	id SERIAL PRIMARY KEY,
 	title VARCHAR(255) NOT NULL,
 	description TEXT,
+	status VARCHAR(20) DEFAULT 'scheduled',
 	start_time TIMESTAMP NOT NULL,
 	end_time TIMESTAMP NOT NULL,
 	owner_id INT REFERENCES users(id) ON DELETE CASCADE,

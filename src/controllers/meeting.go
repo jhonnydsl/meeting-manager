@@ -54,6 +54,7 @@ func (controller *MeetingController) CreateMeeting(c *gin.Context) {
 	meeting := dtos.Meeting{
 		Title: meetingInput.Title,
 		Description: meetingInput.Description,
+		Status: meetingInput.Status,
 		StartTime: startTime,
 		EndTime: endTime,
 		OwnerID: ownerID,
