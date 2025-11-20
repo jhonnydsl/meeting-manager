@@ -31,7 +31,7 @@ func (r *MeetingRepository) CreateMeeting(meeting dtos.Meeting, ownerId int) (dt
 }
 
 func (r *MeetingRepository) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput, error) {
-	query := `SELECT id,title, description, start_time, end_time, owner_id, created_at FROM reunioes WHERE owner_id = $1`
+	query := `SELECT id, title, description, status, start_time, end_time, owner_id, created_at FROM reunioes WHERE owner_id = $1`
 
 	var lista []dtos.MeetingOutput
 
@@ -44,7 +44,7 @@ func (r *MeetingRepository) GetAllMeetings(ownerID int) ([]dtos.MeetingOutput, e
 	for rows.Next() {
 		var u dtos.MeetingOutput
 
-		err = rows.Scan(&u.ID, &u.Title, &u.Description, &u.StartTime, &u.EndTime, &u.OwnerID, &u.CreatedAt)
+		err = rows.Scan(&u.ID, &u.Title, &u.Description, &u.Status, &u.StartTime, &u.EndTime, &u.OwnerID, &u.CreatedAt)
 		if err != nil {
 			return nil, utils.InternalServerError("error fetching meeting")
 		}
