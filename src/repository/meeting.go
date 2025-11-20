@@ -10,7 +10,7 @@ import (
 type MeetingRepository struct{}
 
 func (r *MeetingRepository) CreateMeeting(meeting dtos.Meeting, ownerId int) (dtos.MeetingOutput, error) {
-	query := `INSERT INTO reunioes (title, description, status, start_time, end_time, owner_id) VALUES ($1, $2, $3, $4, $5) RETURNING id, title, description, status, start_time, end_time, owner_id, created_at`
+	query := `INSERT INTO reunioes (title, description, status, start_time, end_time, owner_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, title, description, status, start_time, end_time, owner_id, created_at`
 	var createdMeeting dtos.MeetingOutput
 
 	err := DB.QueryRow(query, meeting.Title, meeting.Description, meeting.Status, meeting.StartTime, meeting.EndTime, ownerId).Scan(
