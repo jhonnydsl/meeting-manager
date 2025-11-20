@@ -52,6 +52,8 @@ definitions:
         type: string
       start_time:
         type: string
+      status:
+        type: string
       title:
         type: string
     required:
@@ -73,6 +75,8 @@ definitions:
         type: integer
       start_time:
         type: string
+      status:
+        type: string
       title:
         type: string
     type: object
@@ -80,9 +84,9 @@ definitions:
     properties:
       description:
         type: string
-      endTime:
+      end_time:
         type: string
-      startTime:
+      start_time:
         type: string
       title:
         type: string

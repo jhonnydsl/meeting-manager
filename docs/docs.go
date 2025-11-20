@@ -1030,6 +1030,9 @@ const docTemplate = `{
                 "start_time": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -1056,6 +1059,9 @@ const docTemplate = `{
                 "start_time": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -1067,10 +1073,10 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "endTime": {
+                "end_time": {
                     "type": "string"
                 },
-                "startTime": {
+                "start_time": {
                     "type": "string"
                 },
                 "title": {

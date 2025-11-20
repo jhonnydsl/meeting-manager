@@ -1024,6 +1024,9 @@
                 "start_time": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -1050,6 +1053,9 @@
                 "start_time": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -1061,10 +1067,10 @@
                 "description": {
                     "type": "string"
                 },
-                "endTime": {
+                "end_time": {
                     "type": "string"
                 },
-                "startTime": {
+                "start_time": {
                     "type": "string"
                 },
                 "title": {
